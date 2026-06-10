@@ -1,0 +1,1531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Moka AI — 新一代智能招聘平台</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --nav-h:60px;
+  --c-brand:#1A5CFF;
+  --c-brand-light:#EEF3FF;
+  --c-text:#0F1117;
+  --c-muted:#6B7280;
+  --c-border:#E5E7EB;
+  --c-bg:#FFFFFF;
+  --c-surface:#F4F6F9;
+  --font:'PingFang SC','Helvetica Neue',Arial,sans-serif;
+  --ease:cubic-bezier(.4,0,.2,1);
+}
+html,body{height:100%;overflow:hidden;font-family:var(--font);color:var(--c-text);background:var(--c-bg)}
+
+/* ── NAV ── */
+#nav{position:fixed;top:0;left:0;right:0;height:var(--nav-h);background:rgba(255,255,255,.96);backdrop-filter:blur(16px);border-bottom:1px solid var(--c-border);z-index:1000;display:flex;align-items:center;padding:0 48px;gap:36px}
+.logo{font-size:18px;font-weight:700;color:var(--c-brand);letter-spacing:-.4px;margin-right:auto;cursor:pointer;user-select:none}
+.logo span{color:var(--c-text)}
+.nav-link{font-size:14px;color:var(--c-muted);cursor:pointer;padding:6px 0;border-bottom:2px solid transparent;transition:color .2s,border-color .2s;white-space:nowrap;user-select:none}
+.nav-link:hover{color:var(--c-text)}
+.nav-link.active{color:var(--c-brand);border-color:var(--c-brand);font-weight:600}
+.nav-links{display:flex;align-items:center;gap:36px}
+.lang-toggle{display:flex;border:1px solid var(--c-border);border-radius:8px;overflow:hidden;margin-left:8px}
+.lang-btn{font-size:12px;padding:5px 12px;cursor:pointer;background:none;border:none;color:var(--c-muted);font-family:var(--font);transition:background .2s,color .2s;font-weight:500}
+.lang-btn.active{background:var(--c-brand);color:#fff}
+.admin-btn{font-size:12px;padding:5px 14px;border-radius:7px;background:var(--c-surface);border:1px solid var(--c-border);color:var(--c-muted);cursor:pointer;font-family:var(--font);transition:all .2s;font-weight:500;display:flex;align-items:center;gap:5px}
+.admin-btn:hover{background:var(--c-brand-light);color:var(--c-brand);border-color:var(--c-brand)}
+.admin-btn.icon-only{width:32px;height:32px;padding:0;justify-content:center;font-size:16px}
+
+/* ── PAGES ── */
+#pages{position:fixed;top:var(--nav-h);left:0;right:0;bottom:0;overflow:hidden}
+.page{position:absolute;inset:0;display:flex;flex-direction:column;opacity:0;pointer-events:none;transition:opacity .4s var(--ease)}
+.page.active{opacity:1;pointer-events:auto}
+
+/* ── HERO ── */
+#hero{background:#07122B}
+.hero-bg{position:absolute;inset:0;overflow:hidden}
+.hero-blob{position:absolute;border-radius:50%;filter:blur(80px);opacity:.35}
+.hero-blob-1{width:500px;height:500px;background:#1A5CFF;top:-100px;left:-80px}
+.hero-blob-2{width:400px;height:400px;background:#7C3AED;bottom:-80px;right:100px}
+.hero-blob-3{width:300px;height:300px;background:#0891B2;top:50%;left:55%;transform:translate(-50%,-50%)}
+.hero-inner{position:relative;z-index:1;flex:1;display:flex;align-items:center;padding:0 80px;gap:80px}
+.hero-text{flex:1;max-width:540px;color:#fff}
+.hero-eyebrow{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:#7C9FFF;margin-bottom:24px;font-weight:500;display:flex;align-items:center;gap:8px}
+.hero-eyebrow::before{content:'';width:24px;height:1px;background:#7C9FFF}
+.hero-title{font-size:56px;font-weight:800;line-height:1.12;letter-spacing:-1px;margin-bottom:22px}
+.hero-title .accent{background:linear-gradient(90deg,#4D8AFF,#A78BFA);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-desc{font-size:16px;line-height:1.85;color:#A0B4D0;margin-bottom:40px;max-width:460px}
+.hero-stats{display:flex;gap:40px}
+.stat-item .num{font-size:38px;font-weight:800;color:#fff;line-height:1}
+.stat-item .num sub{font-size:20px;vertical-align:baseline;color:#7C9FFF;font-weight:600}
+.stat-item .lbl{font-size:12px;color:#7C9FFF;margin-top:6px}
+.hero-cta{display:flex;gap:12px;margin-bottom:48px}
+.btn-primary{padding:12px 28px;background:var(--c-brand);color:#fff;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;border:none;font-family:var(--font);transition:background .2s,transform .15s}
+.btn-primary:hover{background:#0D3DB3;transform:translateY(-1px)}
+.btn-outline{padding:12px 28px;background:rgba(255,255,255,.08);color:#fff;border-radius:8px;font-size:14px;font-weight:500;cursor:pointer;border:1px solid rgba(255,255,255,.15);font-family:var(--font);transition:background .2s}
+.hero-visual{flex:1;max-width:520px}
+.hv-panel{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:20px;backdrop-filter:blur(8px)}
+.hv-header{display:flex;align-items:center;gap:8px;margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid rgba(255,255,255,.08)}
+.hv-dot{width:8px;height:8px;border-radius:50%}
+.hv-title{font-size:13px;color:rgba(255,255,255,.6);margin-left:4px}
+.hv-cards{display:flex;flex-direction:column;gap:8px}
+.hcard{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:13px 15px;display:flex;align-items:center;gap:12px}
+.hcard-icon{width:38px;height:38px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0}
+.hcard-text .t{font-size:13px;font-weight:500;color:rgba(255,255,255,.9)}
+.hcard-text .s{font-size:11px;color:rgba(255,255,255,.4);margin-top:3px}
+.hcard-pill{margin-left:auto;font-size:10px;padding:3px 9px;border-radius:20px;font-weight:600;white-space:nowrap;flex-shrink:0}
+.pulse{animation:pulse 2s ease infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+
+/* ── SCENE PAGE ── */
+#slides-page{background:var(--c-surface)}
+.scene-tabs{display:flex;background:#fff;border-bottom:1px solid var(--c-border);padding:0 32px;flex-shrink:0;overflow-x:auto;scrollbar-width:none}
+.scene-tabs::-webkit-scrollbar{display:none}
+.scene-tab{font-size:13px;padding:14px 16px;cursor:pointer;border-bottom:2px solid transparent;color:var(--c-muted);white-space:nowrap;transition:color .2s,border-color .2s;user-select:none;flex-shrink:0}
+.scene-tab:hover{color:var(--c-text)}
+.scene-tab.active{color:var(--c-brand);border-color:var(--c-brand);font-weight:600}
+.scene-eyebrow-bar{padding:16px 32px 8px;flex-shrink:0}
+.scene-eyebrow{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--c-brand);font-weight:700}
+.scene-main{flex:1;display:flex;gap:16px;padding:0 32px 20px;overflow:hidden;min-height:0}
+.snav-card{width:200px;flex-shrink:0;background:#fff;border:1px solid var(--c-border);border-radius:12px;overflow-y:auto;display:flex;flex-direction:column}
+.snav-head{padding:14px 16px 10px;font-size:11px;color:var(--c-muted);border-bottom:1px solid var(--c-border);flex-shrink:0}
+.snav-item{display:flex;align-items:flex-start;padding:11px 16px;cursor:pointer;border-left:3px solid transparent;transition:all .18s;user-select:none;gap:0}
+.snav-item:hover:not(.active){background:#FAFBFF}
+.snav-item.active{border-color:var(--c-brand);background:var(--c-brand-light)}
+.snav-num{font-size:11px;color:var(--c-muted);min-width:20px;padding-top:1px;flex-shrink:0}
+.snav-item.active .snav-num{color:var(--c-brand)}
+.snav-body{flex:1;min-width:0}
+.snav-name{font-size:13px;color:var(--c-muted);font-weight:500;line-height:1.3}
+.snav-item.active .snav-name{color:var(--c-brand);font-weight:700}
+.snav-tags{display:flex;gap:4px;margin-top:5px;flex-wrap:wrap}
+.snav-tag{font-size:10px;padding:1px 7px;background:#E0E9FF;color:var(--c-brand);border-radius:20px;font-weight:500}
+.snav-arrow{font-size:10px;color:var(--c-brand);margin-left:4px;padding-top:2px;flex-shrink:0}
+.smid-card{flex:0 0 32%;background:#fff;border:1px solid var(--c-border);border-radius:12px;overflow-y:auto;padding:32px 28px;min-width:0}
+.smid-title-row{display:flex;align-items:center;gap:10px;margin-bottom:24px}
+.smid-accent{width:4px;height:24px;background:var(--c-brand);border-radius:2px;flex-shrink:0}
+.smid-title{font-size:20px;font-weight:800;color:var(--c-text);letter-spacing:-.3px}
+.smid-section{margin-bottom:20px}
+.smid-label{font-size:13px;font-weight:700;color:var(--c-text);margin-bottom:10px;display:flex;align-items:center;gap:7px}
+.smid-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.smid-dot.orange{background:#F97316}
+.smid-dot.blue{background:var(--c-brand)}
+.smid-items{display:flex;flex-direction:column;gap:7px}
+.smid-item{font-size:13px;color:var(--c-muted);padding-left:14px;position:relative;line-height:1.65}
+.smid-item::before{content:'●';position:absolute;left:0;color:var(--c-brand);font-size:7px;top:6px}
+.smid-quote{border-left:3px solid #F97316;padding:13px 16px;background:#FFF7ED;border-radius:0 8px 8px 0;font-size:13px;color:#374151;line-height:1.85;margin-top:6px}
+.sright-card{flex:1;background:#fff;border:1px solid var(--c-border);border-radius:12px;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+.sright-hint{font-size:12px;color:var(--c-muted);padding:16px 20px 10px;display:flex;align-items:center;gap:6px;flex-shrink:0;border-bottom:1px solid var(--c-border)}
+.sright-hint::before{content:'●';color:var(--c-brand);font-size:8px;flex-shrink:0}
+.sright-tabs{display:flex;padding:10px 16px 0;gap:4px;flex-shrink:0}
+.sright-tab{font-size:12px;padding:7px 14px;border-radius:6px;cursor:pointer;color:var(--c-muted);border:1px solid var(--c-border);background:#fff;transition:all .18s;user-select:none;white-space:nowrap}
+.sright-tab.active{background:var(--c-brand);color:#fff;border-color:var(--c-brand);font-weight:600}
+.sright-body{flex:1;padding:12px 16px 16px;overflow:hidden;display:flex;flex-direction:column}
+.sright-img-area{flex:1;display:flex;flex-direction:column;gap:8px;overflow:hidden}
+.sright-img{flex:1;border-radius:8px;overflow:hidden;border:1px solid var(--c-border);display:flex;align-items:center;justify-content:center;background:var(--c-surface);min-height:0}
+.sright-img img{width:100%;height:100%;object-fit:contain}
+.sright-img .img-placeholder{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:var(--c-muted);font-size:12px}
+.sright-img .img-placeholder .ph-icon{font-size:32px;opacity:.4}
+/* feishu mockup */
+.fmock{flex:1;border:1px solid var(--c-border);border-radius:10px;overflow:hidden;display:flex;flex-direction:column;background:#fff}
+.fmock-bar{background:#F9FAFB;padding:7px 12px;display:flex;align-items:center;gap:6px;border-bottom:1px solid var(--c-border);flex-shrink:0}
+.fmock-dot{width:9px;height:9px;border-radius:50%}
+.fmock-title{margin-left:auto;font-size:10px;color:var(--c-muted)}
+.fmock-body{flex:1;display:flex;overflow:hidden}
+.fmock-sidebar{width:52px;background:#2B3546;display:flex;flex-direction:column;align-items:center;padding:10px 0;gap:6px;flex-shrink:0}
+.fmock-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px}
+.fmock-icon.on{background:rgba(255,255,255,.15)}
+.fmock-icon.blue{background:var(--c-brand);font-size:13px;font-weight:700;color:#fff}
+.fmock-main{flex:1;overflow:hidden;display:flex;flex-direction:column;background:#fff}
+.fmock-mainbar{padding:8px 14px;border-bottom:1px solid var(--c-border);font-size:12px;font-weight:600;color:var(--c-text);flex-shrink:0}
+.fmock-content{flex:1;overflow-y:auto;padding:10px}
+.hero-card-popup{background:#fff;border:1px solid var(--c-border);border-radius:10px;padding:14px;box-shadow:0 4px 20px rgba(0,0,0,.1);max-width:220px}
+.hcp-header{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.hcp-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#E879F9,#818CF8);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#fff;flex-shrink:0}
+.hcp-name{font-size:13px;font-weight:700;color:var(--c-text)}
+.hcp-sub{font-size:11px;color:var(--c-muted);margin-top:1px}
+.hcp-row{display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-top:1px solid var(--c-border)}
+.hcp-label{font-size:12px;color:var(--c-muted)}
+.hcp-link{font-size:12px;color:var(--c-brand);font-weight:500}
+
+/* ══════════════════════════════════════════
+   ADMIN PAGE
+══════════════════════════════════════════ */
+#admin-page{background:var(--c-surface);flex-direction:row !important}
+.adm-sidebar{width:240px;background:#1E2535;flex-shrink:0;display:flex;flex-direction:column;overflow:hidden}
+.adm-logo{padding:20px 20px 16px;font-size:15px;font-weight:700;color:#fff;border-bottom:1px solid rgba(255,255,255,.08)}
+.adm-logo span{color:#7C9FFF}
+.adm-badge{font-size:10px;background:#F97316;color:#fff;border-radius:4px;padding:1px 6px;margin-left:6px;vertical-align:middle}
+.adm-nav{flex:1;overflow-y:auto;padding:12px 0}
+.adm-section{padding:8px 16px 4px;font-size:10px;letter-spacing:1.5px;color:rgba(255,255,255,.3);text-transform:uppercase;font-weight:600}
+.adm-item{padding:9px 20px;font-size:13px;color:rgba(255,255,255,.55);cursor:pointer;border-left:3px solid transparent;transition:all .18s;user-select:none;display:flex;align-items:center;gap:8px}
+.adm-item:hover{color:#fff;background:rgba(255,255,255,.06)}
+.adm-item.active{color:#fff;border-color:var(--c-brand);background:rgba(26,92,255,.15)}
+.adm-item-icon{font-size:14px;width:18px;text-align:center;flex-shrink:0}
+.adm-footer{padding:14px 16px;border-top:1px solid rgba(255,255,255,.08)}
+.adm-save-all{width:100%;padding:9px;background:var(--c-brand);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--font);transition:background .2s}
+.adm-save-all:hover{background:#0D3DB3}
+.adm-content{flex:1;overflow:hidden;display:flex;flex-direction:column}
+.adm-topbar{padding:16px 28px;border-bottom:1px solid var(--c-border);background:#fff;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.adm-topbar h1{font-size:16px;font-weight:700;color:var(--c-text)}
+.adm-topbar-actions{display:flex;gap:8px;align-items:center}
+.adm-btn{padding:7px 16px;border-radius:7px;font-size:12px;font-weight:600;cursor:pointer;font-family:var(--font);border:none;transition:all .2s}
+.adm-btn.primary{background:var(--c-brand);color:#fff}
+.adm-btn.primary:hover{background:#0D3DB3}
+.adm-btn.ghost{background:var(--c-surface);color:var(--c-muted);border:1px solid var(--c-border)}
+.adm-btn.ghost:hover{color:var(--c-text)}
+.adm-btn.danger{background:#FEE2E2;color:#DC2626;border:1px solid #FECACA}
+.adm-btn.danger:hover{background:#FCA5A5}
+.adm-panels{flex:1;overflow:hidden;position:relative}
+.adm-panel{position:absolute;inset:0;overflow-y:auto;padding:24px 28px;display:none}
+.adm-panel.active{display:block}
+/* fields */
+.adm-card{background:#fff;border:1px solid var(--c-border);border-radius:12px;margin-bottom:16px;overflow:hidden}
+.adm-card-head{padding:14px 20px;border-bottom:1px solid var(--c-border);display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none}
+.adm-card-head h3{font-size:14px;font-weight:700;color:var(--c-text);display:flex;align-items:center;gap:8px}
+.adm-card-head .chevron{font-size:12px;color:var(--c-muted);transition:transform .2s}
+.adm-card-head.open .chevron{transform:rotate(180deg)}
+.adm-card-body{padding:20px;display:none}
+.adm-card-body.open{display:block}
+.adm-field{margin-bottom:16px}
+.adm-field:last-child{margin-bottom:0}
+.adm-label{font-size:11px;font-weight:600;color:var(--c-muted);letter-spacing:.5px;text-transform:uppercase;margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.adm-label .req{color:#EF4444;font-size:10px}
+.adm-input{width:100%;padding:9px 12px;border:1px solid var(--c-border);border-radius:8px;font-size:13px;font-family:var(--font);color:var(--c-text);transition:border-color .2s;outline:none;background:#fff}
+.adm-input:focus{border-color:var(--c-brand);box-shadow:0 0 0 3px rgba(26,92,255,.08)}
+.adm-textarea{width:100%;padding:9px 12px;border:1px solid var(--c-border);border-radius:8px;font-size:13px;font-family:var(--font);color:var(--c-text);transition:border-color .2s;outline:none;resize:vertical;min-height:80px;line-height:1.6;background:#fff}
+.adm-textarea:focus{border-color:var(--c-brand);box-shadow:0 0 0 3px rgba(26,92,255,.08)}
+/* image uploader */
+.img-uploader{border:2px dashed var(--c-border);border-radius:10px;padding:16px;transition:border-color .2s}
+.img-uploader:hover{border-color:var(--c-brand)}
+.img-preview{width:100%;max-height:140px;object-fit:contain;border-radius:8px;margin-bottom:10px;display:none;border:1px solid var(--c-border)}
+.img-preview.show{display:block}
+.img-actions{display:flex;gap:8px;flex-wrap:wrap}
+.img-url-row{display:flex;gap:8px;margin-top:8px}
+.img-url-row input{flex:1;padding:7px 10px;border:1px solid var(--c-border);border-radius:6px;font-size:12px;font-family:var(--font);outline:none}
+.img-url-row input:focus{border-color:var(--c-brand)}
+.img-url-row button{padding:7px 12px;background:var(--c-brand);color:#fff;border:none;border-radius:6px;font-size:12px;cursor:pointer;font-family:var(--font)}
+.upload-btn{padding:7px 14px;background:var(--c-surface);border:1px solid var(--c-border);border-radius:6px;font-size:12px;cursor:pointer;font-family:var(--font);color:var(--c-muted);transition:all .2s}
+.upload-btn:hover{background:var(--c-brand-light);color:var(--c-brand);border-color:var(--c-brand)}
+/* list editor */
+.list-editor{display:flex;flex-direction:column;gap:6px}
+.list-item-row{display:flex;gap:6px;align-items:center}
+.list-item-row input{flex:1;padding:7px 10px;border:1px solid var(--c-border);border-radius:6px;font-size:13px;font-family:var(--font);outline:none;color:var(--c-text)}
+.list-item-row input:focus{border-color:var(--c-brand)}
+.list-del{width:26px;height:26px;border-radius:5px;border:1px solid #FECACA;background:#FEE2E2;color:#DC2626;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;transition:all .2s}
+.list-del:hover{background:#FCA5A5}
+.list-add{margin-top:4px;padding:6px 12px;border-radius:6px;border:1px dashed var(--c-border);background:none;font-size:12px;color:var(--c-muted);cursor:pointer;font-family:var(--font);transition:all .2s;width:100%}
+.list-add:hover{border-color:var(--c-brand);color:var(--c-brand);background:var(--c-brand-light)}
+.inline-select{padding:8px 10px;border:1px solid var(--c-border);border-radius:8px;font-size:13px;font-family:var(--font);outline:none;color:var(--c-text);background:#fff}
+/* scene editor */
+.scene-editor-row{display:flex;gap:16px;margin-bottom:12px}
+.scene-selector{flex-shrink:0}
+.scene-selector select{padding:7px 10px;border:1px solid var(--c-border);border-radius:7px;font-size:12px;font-family:var(--font);outline:none;color:var(--c-text);cursor:pointer}
+.adm-tabs-row{display:flex;gap:4px;margin-bottom:16px;border-bottom:1px solid var(--c-border);padding-bottom:0}
+.adm-tab{padding:8px 14px;font-size:12px;cursor:pointer;border-bottom:2px solid transparent;color:var(--c-muted);user-select:none;white-space:nowrap;transition:all .18s}
+.adm-tab.active{color:var(--c-brand);border-color:var(--c-brand);font-weight:600}
+/* admin login */
+#admin-page.locked{display:flex;align-items:center;justify-content:center}
+#admin-page.locked .adm-sidebar,#admin-page.locked .adm-content{display:none}
+#admin-page:not(.locked) .admin-login-screen{display:none}
+.admin-login-screen{width:100%;height:100%;display:flex;align-items:center;justify-content:center;padding:32px;background:linear-gradient(135deg,#F8FAFC 0%,#EEF3FF 100%)}
+.login-card{width:min(420px,100%);background:#fff;border:1px solid var(--c-border);border-radius:12px;padding:28px;box-shadow:0 16px 48px rgba(15,17,23,.12)}
+.login-title{font-size:22px;font-weight:800;color:var(--c-text);margin-bottom:8px}
+.login-sub{font-size:13px;line-height:1.7;color:var(--c-muted);margin-bottom:22px}
+.login-error{display:none;margin-top:12px;padding:9px 12px;border-radius:8px;background:#FEE2E2;color:#B91C1C;font-size:12px}
+.login-error.show{display:block}
+.login-actions{display:flex;gap:10px;margin-top:18px}
+.login-actions .adm-btn{flex:1;padding:10px 16px;font-size:13px}
+/* toast */
+#toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(20px);background:#1E2535;color:#fff;padding:10px 20px;border-radius:10px;font-size:13px;font-weight:500;z-index:9999;opacity:0;transition:all .3s;pointer-events:none}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+/* unsaved dot */
+.unsaved-dot{width:7px;height:7px;border-radius:50%;background:#F97316;display:inline-block;margin-left:4px;vertical-align:middle}
+</style>
+</head>
+<body>
+
+<div id="toast"></div>
+
+<!-- NAV -->
+<nav id="nav">
+  <div class="logo" onclick="goPage('hero')">Moka<span> AI</span></div>
+  <div class="nav-links" id="nav-links"></div>
+  <div class="lang-toggle" style="margin-left:auto">
+    <button class="lang-btn" onclick="setLang('zh',this)">中文</button>
+    <button class="lang-btn active" onclick="setLang('en',this)">EN</button>
+  </div>
+  <button class="admin-btn icon-only" onclick="goPage('admin')" title="后台编辑" aria-label="后台编辑">⚙️</button>
+</nav>
+
+<div id="pages">
+
+<!-- ① HERO -->
+<div class="page active" id="hero">
+  <div class="hero-bg">
+    <div class="hero-blob hero-blob-1"></div>
+    <div class="hero-blob hero-blob-2"></div>
+    <div class="hero-blob hero-blob-3"></div>
+  </div>
+  <div class="hero-inner">
+    <div class="hero-text">
+      <div class="hero-eyebrow" id="t-eyebrow"></div>
+      <h1 class="hero-title" id="t-title"></h1>
+      <p class="hero-desc" id="t-desc"></p>
+      <div class="hero-cta">
+        <button class="btn-primary" id="t-cta1" onclick="goPage('slides')"></button>
+        <button class="btn-outline" id="t-cta2"></button>
+      </div>
+      <div class="hero-stats">
+        <div class="stat-item"><div class="num" id="t-stat1-num"></div><div class="lbl" id="t-stat1-lbl"></div></div>
+        <div class="stat-item"><div class="num" id="t-stat2-num"></div><div class="lbl" id="t-stat2-lbl"></div></div>
+        <div class="stat-item"><div class="num" id="t-stat3-num"></div><div class="lbl" id="t-stat3-lbl"></div></div>
+      </div>
+    </div>
+    <div class="hero-visual" id="hero-visual-area">
+      <div class="hv-panel">
+        <div class="hv-header">
+          <div class="hv-dot" style="background:#FF5F57"></div>
+          <div class="hv-dot" style="background:#FEBC2E"></div>
+          <div class="hv-dot" style="background:#28C840"></div>
+          <div class="hv-title" id="t-console-title"></div>
+        </div>
+        <div class="hv-cards" id="hero-cards"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ② SCENE CENTER -->
+<div class="page" id="slides-page">
+  <div class="scene-tabs" id="scene-tabs-el"></div>
+  <div class="scene-eyebrow-bar"><div class="scene-eyebrow" id="scene-eyebrow">AI RECRUITING SCENARIOS</div></div>
+  <div class="scene-main">
+    <div class="snav-card"><div class="snav-head" id="snav-head">场景列表</div><div id="snav-items"></div></div>
+    <div class="smid-card" id="smid-card"></div>
+    <div class="sright-card" id="sright-card"></div>
+  </div>
+</div>
+
+<!-- ③ ADMIN -->
+<div class="page locked" id="admin-page">
+  <div class="admin-login-screen">
+    <form class="login-card" onsubmit="return loginAdmin(event)">
+      <div class="login-title">后台编辑登录</div>
+      <div class="login-sub">请输入管理员账号密码后编辑网站文案、场景内容与图片。修改会保存在当前浏览器中。</div>
+      <div class="adm-field">
+        <div class="adm-label">账号</div>
+        <input class="adm-input" id="admin-username" autocomplete="username" placeholder="请输入账号">
+      </div>
+      <div class="adm-field">
+        <div class="adm-label">密码</div>
+        <input class="adm-input" id="admin-password" type="password" autocomplete="current-password" placeholder="请输入密码">
+      </div>
+      <div class="login-actions">
+        <button class="adm-btn ghost" type="button" onclick="goPage('hero')">返回前台</button>
+        <button class="adm-btn primary" type="submit">登录编辑</button>
+      </div>
+      <div class="login-error" id="login-error">账号或密码不正确</div>
+    </form>
+  </div>
+  <div class="adm-sidebar">
+    <div class="adm-logo">后台编辑 <span>Admin</span><span class="adm-badge">Beta</span></div>
+    <div class="adm-nav">
+      <div class="adm-section">页面内容</div>
+      <div class="adm-item active" onclick="showAdmPanel('hero-edit',this)"><span class="adm-item-icon">🏠</span><span id="adm-menu-hero">公司介绍 Hero</span></div>
+      <div class="adm-item" onclick="showAdmPanel('scenes-edit',this)"><span class="adm-item-icon">🎬</span><span id="adm-menu-scenes">场景中心内容</span></div>
+      <div class="adm-section" style="margin-top:8px">导航 & 全局</div>
+      <div class="adm-item" onclick="showAdmPanel('nav-edit',this)"><span class="adm-item-icon">🔗</span>导航栏文字</div>
+      <div class="adm-item" onclick="showAdmPanel('bigtab-edit',this)"><span class="adm-item-icon">📑</span>大场景 Tab 标签</div>
+    </div>
+    <div class="adm-footer">
+      <button class="adm-save-all" onclick="saveAll()">💾 保存全部修改</button>
+    </div>
+  </div>
+  <div class="adm-content">
+    <div class="adm-topbar">
+      <h1 id="adm-panel-title">公司介绍 Hero</h1>
+      <div class="adm-topbar-actions">
+        <div class="lang-toggle">
+          <button class="lang-btn" id="adm-lang-zh" onclick="setLang('zh',this)">中文</button>
+          <button class="lang-btn active" id="adm-lang-en" onclick="setLang('en',this)">EN</button>
+        </div>
+        <button class="adm-btn ghost" onclick="resetData()">↺ 重置默认</button>
+        <button class="adm-btn ghost" onclick="goPage('hero')">👁 预览前台</button>
+        <button class="adm-btn ghost" onclick="downloadPublishedHtml()">导出HTML</button>
+        <button class="adm-btn ghost" onclick="openGithubSettings()">GitHub设置</button>
+        <button class="adm-btn ghost" onclick="publishToGithub()">同步GitHub</button>
+        <button class="adm-btn ghost" onclick="logoutAdmin()">退出登录</button>
+        <button class="adm-btn primary" onclick="saveAll()">保存</button>
+      </div>
+    </div>
+    <div class="adm-panels">
+
+      <!-- HERO EDIT -->
+      <div class="adm-panel active" id="panel-hero-edit">
+        <div class="adm-card">
+          <div class="adm-card-head open" onclick="toggleCard(this)"><h3>🖼 Hero 主视觉图片</h3><span class="chevron">▼</span></div>
+          <div class="adm-card-body open">
+            <div class="adm-field">
+              <div class="adm-label">Hero 右侧图片 <span class="req">（替换后会覆盖默认 mockup）</span></div>
+              <div class="img-uploader" id="hero-img-uploader">
+                <img class="img-preview" id="hero-img-preview">
+                <div class="img-actions">
+                  <label class="upload-btn">📁 上传本地图片<input type="file" accept="image/*" style="display:none" onchange="handleImgUpload(event,'hero_img','hero-img-preview')"></label>
+                  <button class="upload-btn" onclick="clearImg('hero_img','hero-img-preview')">🗑 清除图片</button>
+                </div>
+                <div class="img-url-row">
+                  <input type="text" placeholder="或输入图片 URL..." id="hero-img-url">
+                  <button onclick="applyImgUrl('hero-img-url','hero_img','hero-img-preview')">应用</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="adm-card">
+          <div class="adm-card-head open" onclick="toggleCard(this)"><h3>✏️ Hero 文字内容</h3><span class="chevron">▼</span></div>
+          <div class="adm-card-body open">
+            <div class="adm-field"><div class="adm-label">Eyebrow 副标题</div><input class="adm-input" id="f-hero-eyebrow" oninput="markUnsaved()"></div>
+            <div class="adm-field"><div class="adm-label">主标题（支持 &lt;span class="accent"&gt; 渐变色）</div><textarea class="adm-textarea" id="f-hero-title" rows="2" oninput="markUnsaved()"></textarea></div>
+            <div class="adm-field"><div class="adm-label">描述文字</div><textarea class="adm-textarea" id="f-hero-desc" rows="3" oninput="markUnsaved()"></textarea></div>
+            <div class="adm-field"><div class="adm-label">按钮一文字</div><input class="adm-input" id="f-hero-cta1" oninput="markUnsaved()"></div>
+            <div class="adm-field"><div class="adm-label">按钮二文字</div><input class="adm-input" id="f-hero-cta2" oninput="markUnsaved()"></div>
+          </div>
+        </div>
+        <div class="adm-card">
+          <div class="adm-card-head open" onclick="toggleCard(this)"><h3>📊 统计数字</h3><span class="chevron">▼</span></div>
+          <div class="adm-card-body open">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+              <div class="adm-field"><div class="adm-label">数字 1</div><input class="adm-input" id="f-stat1-num" oninput="markUnsaved()"></div>
+              <div class="adm-field"><div class="adm-label">说明 1</div><input class="adm-input" id="f-stat1-lbl" oninput="markUnsaved()"></div>
+              <div class="adm-field"><div class="adm-label">数字 2</div><input class="adm-input" id="f-stat2-num" oninput="markUnsaved()"></div>
+              <div class="adm-field"><div class="adm-label">说明 2</div><input class="adm-input" id="f-stat2-lbl" oninput="markUnsaved()"></div>
+              <div class="adm-field"><div class="adm-label">数字 3</div><input class="adm-input" id="f-stat3-num" oninput="markUnsaved()"></div>
+              <div class="adm-field"><div class="adm-label">说明 3</div><input class="adm-input" id="f-stat3-lbl" oninput="markUnsaved()"></div>
+            </div>
+          </div>
+        </div>
+        <div class="adm-card">
+          <div class="adm-card-head open" onclick="toggleCard(this)"><h3>🃏 AI 状态卡片</h3><span class="chevron">▼</span></div>
+          <div class="adm-card-body open">
+            <div class="adm-field"><div class="adm-label">控制台标题</div><input class="adm-input" id="f-console-title" oninput="markUnsaved()"></div>
+            <div id="hero-cards-editor"></div>
+            <button class="list-add" onclick="addHeroCard()">＋ 添加卡片</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- SCENES EDIT -->
+      <div class="adm-panel" id="panel-scenes-edit">
+        <div style="display:flex;gap:12px;margin-bottom:16px;align-items:center;flex-wrap:wrap">
+          <div class="adm-label" style="margin:0">选择大场景 Tab：</div>
+          <select id="adm-big-sel" onchange="loadSceneEditor()" style="padding:7px 12px;border:1px solid var(--c-border);border-radius:7px;font-size:13px;font-family:var(--font);outline:none;color:var(--c-text)"></select>
+          <div class="adm-label" style="margin:0;margin-left:8px">选择子场景：</div>
+          <select id="adm-scene-sel" onchange="loadSceneDetail()" style="padding:7px 12px;border:1px solid var(--c-border);border-radius:7px;font-size:13px;font-family:var(--font);outline:none;color:var(--c-text)"></select>
+          <button class="adm-btn primary" onclick="addScene()">＋ 添加子场景</button>
+          <button class="adm-btn danger" onclick="removeScene()">删除当前子场景</button>
+        </div>
+        <div id="scene-detail-editor"></div>
+      </div>
+
+      <!-- NAV EDIT -->
+      <div class="adm-panel" id="panel-nav-edit">
+        <div class="adm-card">
+          <div class="adm-card-head open" onclick="toggleCard(this)"><h3>🔗 导航栏 Tab</h3><span class="chevron">▼</span></div>
+          <div class="adm-card-body open">
+            <div class="adm-field"><div class="adm-label">Logo 文字（蓝色部分）</div><input class="adm-input" id="f-logo-blue" oninput="markUnsaved()"></div>
+            <div class="adm-field"><div class="adm-label">Logo 文字（黑色部分）</div><input class="adm-input" id="f-logo-black" oninput="markUnsaved()"></div>
+            <div id="nav-editor"></div>
+            <button class="list-add" onclick="addNavItem()">＋ 添加导航 Tab</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- BIGTAB EDIT -->
+      <div class="adm-panel" id="panel-bigtab-edit">
+        <div class="adm-card">
+          <div class="adm-card-head open" onclick="toggleCard(this)"><h3>📑 大场景 Tab 标签名</h3><span class="chevron">▼</span></div>
+          <div class="adm-card-body open">
+            <div id="bigtab-editor"></div>
+            <button class="list-add" onclick="addBigTab()">＋ 添加大场景 Tab</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+</div><!-- #pages -->
+
+<script type="application/json" id="moka-published-data">{}</script>
+<script>
+/* ══════════════════════════════════════════════════════
+   DEFAULT DATA
+══════════════════════════════════════════════════════ */
+const DEFAULT = {
+  logo_blue: 'Moka',
+  logo_black: ' AI',
+  nav1: '公司介绍',
+  nav2: '产品中心',
+  nav_items: [
+    {label:'公司介绍', page:'hero'},
+    {label:'产品中心', page:'slides'}
+  ],
+  hero_eyebrow: '新一代 AI 智能招聘平台',
+  hero_title: '让每一次招聘<br>决策<span class="accent">更快更准</span>',
+  hero_desc: '基于大模型与行业数据双轮驱动，覆盖全链路招聘场景，将 HR 从重复劳动中彻底解放，聚焦真正有价值的人才判断。',
+  hero_cta1: '探索产品中心 →',
+  hero_cta2: '申请演示',
+  stat1_num: '87%',
+  stat1_lbl: '简历筛选效率提升',
+  stat2_num: '3×',
+  stat2_lbl: '录用周期缩短',
+  stat3_num: '500+',
+  stat3_lbl: '企业客户',
+  console_title: 'AI 招聘控制台 — 实时状态',
+  hero_img: '',
+  hero_cards: [
+    {icon:'🤖',title:'AI 简历解析',sub:'正在处理 142 份简历...',pill:'● 实时',pill_color:'#4ADE80',pill_bg:'#16A34A22'},
+    {icon:'⚡',title:'智能面试评估',sub:'已完成 28 场 AI 初筛',pill:'今日',pill_color:'#FCD34D',pill_bg:'#F59E0B22'},
+    {icon:'🎯',title:'岗位匹配推荐',sub:'推荐准确率 94.2%',pill:'↑ 6%',pill_color:'#7C9FFF',pill_bg:'#1A5CFF22'},
+    {icon:'📊',title:'招聘漏斗分析',sub:'本周报告已自动生成',pill:'报告',pill_color:'#9CA3AF',pill_bg:'#6B728022'},
+  ],
+  big_tab_names: ['AI 招聘场景','AI 产品能力','生态合作','系统对接','合规 & 安全','服务体系','实施体系'],
+  big_tabs: [
+    {eyebrow:'AI RECRUITING SCENARIOS',navHead:'场景列表 · 9',scenes:[
+      {name:'英雄卡片穿透',num:'01',tags:[],
+        mid:{title:'英雄卡片穿透',sections:[
+          {type:'value',label:'客户价值',dot:'orange',items:['管理者无需在多系统间切换，看人即可决策','把 Moka 的人才信息直接「贴」在飞书沟通流之上','降低管理者使用 HR 系统的门槛，提升数据查阅率']},
+          {type:'quote',label:'Moka 方案',dot:'blue',text:'Moka 与飞书英雄卡片深度集成：在飞书任意位置点击员工姓名，悬浮卡片中即可一键跳转至 Moka 的员工一页纸档案与目标详情页，覆盖基础信息、组织关系、绩效目标、薪酬等管理者关注的关键字段。如有需要可点击右上角快速发起与员工的飞书会话。'}
+        ]},
+        right:{hint:'点开飞书英雄卡片，可直达 Moka 的个人一页纸档案和目标详情',tabs:['英雄卡片','穿透一页纸档案','穿透员工目标'],imgs:['','',''],mockup:'feishu-hero'}
+      },
+      {name:'团队看板',num:'02',tags:[],mid:{title:'团队看板',sections:[{type:'value',label:'客户价值',dot:'orange',items:['HR 与业务方实时共享招聘进展，协同效率大幅提升','数据可视化，招聘漏斗一目了然','自定义看板视图，满足不同角色需求']},{type:'quote',label:'Moka 方案',dot:'blue',text:'Moka 团队看板支持多维度视图切换，可按职位、招聘官、业务线等维度聚合数据，实时呈现简历流转状态、面试安排及 Offer 进展，让招聘全流程透明可控。'}]},right:{hint:'实时查看团队招聘进度与数据',tabs:['看板视图','列表视图'],imgs:['',''],mockup:'generic'}},
+      {name:'报表订阅',num:'03',tags:['2个子场景'],mid:{title:'报表订阅',sections:[{type:'value',label:'客户价值',dot:'orange',items:['自动推送招聘数据报表，免去手动导出','支持多种订阅频率，日/周/月报灵活配置','直接推送至飞书/邮件，零摩擦接收']},{type:'quote',label:'Moka 方案',dot:'blue',text:'Moka 报表订阅功能支持将招聘漏斗、渠道效果、Offer 完成率等核心报表，按设定频率自动推送至指定人员的飞书或邮箱，决策者无需登录系统即可掌握招聘全貌。'}]},right:{hint:'自动推送招聘数据，随时掌握招聘进展',tabs:['招聘漏斗报表','渠道效果报表'],imgs:['',''],mockup:'generic'}},
+      {name:'流程审批',num:'04',tags:['5个子场景'],mid:{title:'流程审批',sections:[{type:'value',label:'客户价值',dot:'orange',items:['审批消息直达飞书，无需切换系统处理','移动端一键审批，随时随地不卡流程','审批节点可视化，状态实时可追踪']},{type:'quote',label:'Moka 方案',dot:'blue',text:'Moka 与飞书审批深度集成，HC 申请、Offer 审批、背调发起等关键节点均可在飞书中直接完成审批操作，并支持查看候选人完整信息辅助决策，将审批效率提升 60% 以上。'}]},right:{hint:'审批消息直达飞书，移动端一键处理',tabs:['HC 审批','Offer 审批'],imgs:['',''],mockup:'generic'}},
+      {name:'任务/抄送',num:'05',tags:['2个子场景'],mid:{title:'任务/抄送',sections:[{type:'value',label:'客户价值',dot:'orange',items:['招聘待办任务精准推送，不遗漏任何节点','抄送机制确保信息透明，相关方实时知晓','减少沟通成本，提升招聘协作效率']},{type:'quote',label:'Moka 方案',dot:'blue',text:'Moka 将面试安排提醒、候选人跟进任务、入职办理待办等通过飞书消息精准推送至责任人，同时支持 CC 抄送机制，让 HRBP、业务负责人等相关角色实时同步进展。'}]},right:{hint:'招聘任务与抄送消息精准推送至飞书',tabs:['任务提醒','抄送通知'],imgs:['',''],mockup:'generic'}},
+      {name:'发起实时会话',num:'06',tags:[],mid:{title:'发起实时会话',sections:[{type:'value',label:'客户价值',dot:'orange',items:['一键发起候选人/面试官飞书会话，沟通零门槛','无需手动查找联系方式，效率大幅提升','会话记录与招聘流程关联，信息不丢失']},{type:'quote',label:'Moka 方案',dot:'blue',text:'在 Moka 任意候选人或面试官页面，点击飞书图标即可一键拉起飞书会话，系统自动关联对应招聘项目上下文，让 HR 与候选人、面试官的沟通更高效自然。'}]},right:{hint:'一键从 Moka 发起飞书实时会话',tabs:['发起单聊','发起群聊'],imgs:['',''],mockup:'generic'}},
+      {name:'日程同步',num:'07',tags:[],mid:{title:'日程同步',sections:[{type:'value',label:'客户价值',dot:'orange',items:['面试日程自动同步至飞书日历，零手动操作','面试官行程冲突自动检测，避免时间碰撞','候选人收到飞书日历邀请，体验专业']},{type:'quote',label:'Moka 方案',dot:'blue',text:'Moka 与飞书日历双向同步，在 Moka 安排面试后，面试时间、地点、视频链接自动写入面试官与候选人的飞书日历，并支持冲突检测与一键改期，大幅减少协调成本。'}]},right:{hint:'面试日程自动同步飞书日历，双向联动',tabs:['日历视图','冲突检测'],imgs:['',''],mockup:'generic'}},
+      {name:'消息窗口',num:'08',tags:[],mid:{title:'消息窗口',sections:[{type:'value',label:'客户价值',dot:'orange',items:['所有招聘消息集中在飞书一个窗口处理','消息分类清晰，优先级一目了然','历史消息可回溯，沟通有据可查']},{type:'quote',label:'Moka 方案',dot:'blue',text:'Moka 消息窗口将简历通知、面试提醒、审批待办、系统公告等所有招聘相关消息统一汇聚，HR 只需在飞书消息中心即可完成日常招聘运营的全部消息处理。'}]},right:{hint:'所有招聘消息汇聚飞书，集中高效处理',tabs:['消息列表','消息详情'],imgs:['',''],mockup:'generic'}},
+      {name:'链接预览卡片',num:'09',tags:[],mid:{title:'链接预览卡片',sections:[{type:'value',label:'客户价值',dot:'orange',items:['分享 Moka 链接在飞书自动展开为富媒体卡片','关键信息一目了然，无需点击跳转','提升协作体验，信息传递更高效']},{type:'quote',label:'Moka 方案',dot:'blue',text:'当用户在飞书中分享 Moka 的职位、候选人或报告链接时，系统自动将其渲染为包含核心信息的预览卡片，接收方无需登录即可了解关键内容，大幅降低信息传递的摩擦。'}]},right:{hint:'Moka 链接在飞书自动展开为富媒体卡片',tabs:['职位卡片','候选人卡片'],imgs:['',''],mockup:'generic'}},
+    ]},
+    {eyebrow:'AI PRODUCT CAPABILITIES',navHead:'能力列表 · 3',scenes:[
+      {name:'招聘垂直大模型',num:'01',tags:[],mid:{title:'招聘垂直大模型',sections:[{type:'value',label:'核心价值',dot:'orange',items:['10亿+ 真实简历数据微调，深度理解招聘语义','行业 Top 50+ 岗位专项训练，精准度行业领先','模型持续迭代，每月更新优化']},{type:'quote',label:'技术方案',dot:'blue',text:'Moka 基于通用大语言模型底座，使用亿级招聘垂直数据进行精细化微调，构建业内最深度的招聘 AI 能力。'}]},right:{hint:'自研大模型覆盖全链路招聘 AI 场景',tabs:['模型架构','能力指标'],imgs:['',''],mockup:'generic'}},
+      {name:'简历智能解析',num:'02',tags:[],mid:{title:'简历智能解析',sections:[{type:'value',label:'核心价值',dot:'orange',items:['支持 20+ 文件格式，OCR+NLP 双引擎','解析准确率 ≥98.3%，行业领先','自动归档结构化数据，人才库质量大幅提升']},{type:'quote',label:'技术方案',dot:'blue',text:'Moka 简历解析引擎融合 OCR 视觉识别与 NLP 语义理解，精准识别 50+ 维度字段。'}]},right:{hint:'98.3% 解析准确率，支持 20+ 格式',tabs:['解析效果','支持格式'],imgs:['',''],mockup:'generic'}},
+      {name:'AI 面试助手',num:'03',tags:[],mid:{title:'AI 面试助手',sections:[{type:'value',label:'核心价值',dot:'orange',items:['AI 动态生成结构化面试题，覆盖 200+ 岗位','实时语音转文字，面试记录自动生成','AI 评分报告客观公正，减少主观偏差']},{type:'quote',label:'技术方案',dot:'blue',text:'Moka AI 面试助手基于岗位画像自动生成 STAR 结构化问题集，AI 自动生成包含能力评级、关键亮点、风险提示的结构化评估报告。'}]},right:{hint:'AI 生成面试题 + 实时记录 + 智能评估报告',tabs:['题目生成','评估报告'],imgs:['',''],mockup:'generic'}},
+    ]},
+    {eyebrow:'ECOSYSTEM',navHead:'合作类型 · 3',scenes:[
+      {name:'招聘渠道集成',num:'01',tags:['50+ 渠道'],mid:{title:'招聘渠道集成',sections:[{type:'value',label:'客户价值',dot:'orange',items:['一个平台管理所有渠道，告别多系统切换','简历自动同步到 Moka，去重归档零手工','渠道效果数据统一分析，ROI 一目了然']},{type:'quote',label:'Moka 方案',dot:'blue',text:'Moka 直连 BOSS 直聘、猎聘、智联、领英、拉勾等 50+ 主流招聘渠道，简历一键同步并自动去重归档。'}]},right:{hint:'50+ 渠道一键集成，简历自动同步到 Moka',tabs:['渠道列表','数据回流'],imgs:['',''],mockup:'generic'}},
+      {name:'即时通讯集成',num:'02',tags:['飞书/钉钉/企微'],mid:{title:'即时通讯集成',sections:[{type:'value',label:'客户价值',dot:'orange',items:['招聘消息融入日常办公工具，零切换成本','英雄卡片穿透、审批、日历深度联动','统一 IM 入口，HR 效率显著提升']},{type:'quote',label:'Moka 方案',dot:'blue',text:'Moka 与飞书、钉钉、企业微信实现深度双向集成，真正实现「在飞书里做招聘」。'}]},right:{hint:'深度集成飞书/钉钉/企微，双向联动',tabs:['飞书集成','钉钉集成','企微集成'],imgs:['','',''],mockup:'generic'}},
+      {name:'HR 系统生态',num:'03',tags:['HCM'],mid:{title:'HR 系统生态',sections:[{type:'value',label:'客户价值',dot:'orange',items:['招聘数据自动同步 HCM，消除手工录入','组织架构、职级体系双向同步保持一致','入职流程自动触发，全链路无缝衔接']},{type:'quote',label:'Moka 方案',dot:'blue',text:'Moka 预置 Workday、SAP SuccessFactors、北森、人瑞等 20+ 主流 HCM 系统连接器，支持候选人转员工等核心数据的双向实时同步。'}]},right:{hint:'预置 20+ HCM 连接器，招聘数据自动同步',tabs:['国际HCM','国内HCM'],imgs:['',''],mockup:'generic'}},
+    ]},
+    {eyebrow:'SYSTEM INTEGRATION',navHead:'对接能力 · 3',scenes:[
+      {name:'REST API 对接',num:'01',tags:[],mid:{title:'REST API 对接',sections:[{type:'value',label:'客户价值',dot:'orange',items:['标准 HTTP 协议，任意技术栈均可对接','详尽文档 + 在线调试，开发效率高','版本管理完善，升级无兼容性风险']},{type:'quote',label:'Moka 方案',dot:'blue',text:'Moka REST API 覆盖职位、候选人、面试、Offer 等全链路资源，提供 Postman Collection 与 OpenAPI Spec，接入周期通常在 1-3 天。'}]},right:{hint:'标准 REST API，1-3 天完成系统对接',tabs:['接口文档','鉴权方式'],imgs:['',''],mockup:'generic'}},
+      {name:'Webhook 推送',num:'02',tags:[],mid:{title:'Webhook 实时推送',sections:[{type:'value',label:'客户价值',dot:'orange',items:['事件实时推送，数据延迟 <1 秒','覆盖 80+ 招聘事件，订阅粒度精细','自动重试机制，推送成功率 ≥99.9%']},{type:'quote',label:'Moka 方案',dot:'blue',text:'Moka Webhook 支持订阅 80+ 招聘事件，支持签名校验、消息去重与自动重试，确保数据一致性。'}]},right:{hint:'80+ 事件实时推送，延迟 <1s',tabs:['事件列表','重试机制'],imgs:['',''],mockup:'generic'}},
+      {name:'低代码配置器',num:'03',tags:[],mid:{title:'低代码对接配置器',sections:[{type:'value',label:'客户价值',dot:'orange',items:['可视化字段映射，0 代码完成数据对接','内置格式转换引擎，自动处理数据差异','健康度监控看板，对接状态实时掌握']},{type:'quote',label:'Moka 方案',dot:'blue',text:'Moka 低代码配置器提供图形化字段映射界面，HR 或业务人员无需编写代码即可完成两系统间的数据对接。'}]},right:{hint:'可视化配置，0 代码完成系统字段映射',tabs:['字段映射','健康监控'],imgs:['',''],mockup:'generic'}},
+    ]},
+    {eyebrow:'COMPLIANCE & SECURITY',navHead:'安全能力 · 3',scenes:[
+      {name:'数据加密',num:'01',tags:[],mid:{title:'数据加密体系',sections:[{type:'value',label:'安全价值',dot:'orange',items:['传输层 TLS 1.3，传输过程零风险','存储层 AES-256 加密，静态数据有保障','客户自主管理密钥（BYOK），数据主权归客户']},{type:'quote',label:'技术方案',dot:'blue',text:'Moka 采用端到端加密体系，企业版客户可启用 BYOK（自带密钥）功能，密钥由客户 KMS 系统独立管理，Moka 无权访问明文数据。'}]},right:{hint:'端到端加密 + 客户自主管理密钥',tabs:['加密架构','密钥管理'],imgs:['',''],mockup:'generic'}},
+      {name:'等保三级认证',num:'02',tags:[],mid:{title:'国内合规认证',sections:[{type:'value',label:'合规价值',dot:'orange',items:['等保三级通过，满足国内最高安全等级','符合《个人信息保护法》《数据安全法》','年度审计留存，合规证明随时可查']},{type:'quote',label:'认证体系',dot:'blue',text:'Moka 已通过国家信息安全等级保护三级认证，并符合《个人信息保护法》《数据安全法》等国内核心数据法规要求，同时通过 ISO 27001、SOC 2 Type II 国际认证。'}]},right:{hint:'等保三级 · ISO 27001 · SOC 2 Type II',tabs:['国内认证','国际认证'],imgs:['',''],mockup:'generic'}},
+      {name:'访问控制',num:'03',tags:[],mid:{title:'访问控制体系',sections:[{type:'value',label:'安全价值',dot:'orange',items:['细粒度 RBAC，字段级权限精准管控','SSO 单点登录，统一身份验证入口','全量操作日志，每一次数据访问可追溯']},{type:'quote',label:'技术方案',dot:'blue',text:'Moka 权限体系采用角色-资源-操作三维 RBAC 模型，SSO 模块兼容 SAML 2.0、OAuth 2.0、LDAP/AD，所有操作均写入不可篡改的审计日志。'}]},right:{hint:'字段级 RBAC + SSO + 全量审计日志',tabs:['权限模型','SSO 配置'],imgs:['',''],mockup:'generic'}},
+    ]},
+    {eyebrow:'SERVICE SYSTEM',navHead:'服务项目 · 3',scenes:[
+      {name:'客户成功服务',num:'01',tags:[],mid:{title:'客户成功服务',sections:[{type:'value',label:'服务价值',dot:'orange',items:['专属 CSM 1v1 对接，问题响应 <4 小时','上线后 90 天密集跟进期，快速发挥价值','季度 QBR 数据回顾，持续优化使用效果']},{type:'quote',label:'服务内容',dot:'blue',text:'每位企业客户自签约起将配置专属客户成功经理（CSM），全程陪跑从实施到运营的完整周期，每季度开展 QBR 并提供个性化优化建议。'}]},right:{hint:'专属 CSM 全程陪跑，90 天密集跟进期',tabs:['服务流程','联系方式'],imgs:['',''],mockup:'generic'}},
+      {name:'技术支持',num:'02',tags:[],mid:{title:'技术支持体系',sections:[{type:'value',label:'服务价值',dot:'orange',items:['7×24 小时在线技术支持，全年无休','P0 级故障 30 分钟内响应处理','企业版专属技术联络人，问题直通研发']},{type:'quote',label:'服务内容',dot:'blue',text:'Moka 技术支持团队提供 7×24 全天候服务，按 P0-P3 四级优先级管理，P0（系统不可用）30 分钟内响应。'}]},right:{hint:'7×24 支持 · P0 故障 30 分钟响应',tabs:['响应标准','联系渠道'],imgs:['',''],mockup:'generic'}},
+      {name:'培训与赋能',num:'03',tags:[],mid:{title:'培训与赋能体系',sections:[{type:'value',label:'服务价值',dot:'orange',items:['100+ 课时线上课程，随时随地学习','现场工作坊可定制，针对企业场景深度培训','管理员认证体系，能力标准可验证']},{type:'quote',label:'服务内容',dot:'blue',text:'Moka 学习平台内置 100+ 课时视频课程，并设立招聘管理员资格认证，帮助企业建立内部 Moka 专家团队。'}]},right:{hint:'100+ 课时课程 + 认证体系，全面赋能',tabs:['课程体系','认证考试'],imgs:['',''],mockup:'generic'}},
+    ]},
+    {eyebrow:'IMPLEMENTATION',navHead:'实施阶段 · 4',scenes:[
+      {name:'启动期',num:'01',tags:[],mid:{title:'启动期（第 1-3 天）',sections:[{type:'value',label:'核心目标',dot:'orange',items:['明确项目范围、交付物与时间节点','双方团队正式介绍，建立协作机制','收集企业招聘流程、组织架构等基础信息']},{type:'quote',label:'交付内容',dot:'blue',text:'项目启动会议召开后，Moka 实施团队将完成需求调研问卷收集、项目计划制定、账号权限开通等工作，形成《项目启动确认书》与《详细实施计划》两份标准交付文档。'}]},right:{hint:'第 1-3 天 · 项目启动，双方团队对齐目标',tabs:['启动清单','标准文档'],imgs:['',''],mockup:'generic'}},
+      {name:'配置期',num:'02',tags:[],mid:{title:'配置期（第 4-10 天）',sections:[{type:'value',label:'核心目标',dot:'orange',items:['完成招聘流程搭建与系统配置','数据迁移与历史档案导入','完成系统集成对接（API/飞书等）']},{type:'quote',label:'交付内容',dot:'blue',text:'Moka 实施顾问依据调研结果，完成职位模板、面试流程、审批流程、权限体系的全量配置，并协助完成历史候选人数据迁移。'}]},right:{hint:'第 4-10 天 · 流程配置 + 数据迁移 + 集成对接',tabs:['配置清单','迁移方案'],imgs:['',''],mockup:'generic'}},
+      {name:'测试期',num:'03',tags:[],mid:{title:'测试期（第 11-12 天）',sections:[{type:'value',label:'核心目标',dot:'orange',items:['业务团队 UAT 测试，覆盖核心场景','问题修复与配置调整快速迭代','上线前培训，确保用户操作熟练']},{type:'quote',label:'交付内容',dot:'blue',text:'Moka 提供标准 UAT 测试用例集（覆盖 50+ 核心场景），Moka 实施团队承诺 T+1 日完成 P1 以上问题修复。'}]},right:{hint:'第 11-12 天 · UAT 测试 + 培训交付',tabs:['测试用例','培训计划'],imgs:['',''],mockup:'generic'}},
+      {name:'上线期',num:'04',tags:[],mid:{title:'上线期（第 13-14 天）',sections:[{type:'value',label:'核心目标',dot:'orange',items:['生产环境切换，正式上线','上线当日驻场支持，问题即时解决','上线后 30 天免费驻场稳定期']},{type:'quote',label:'交付内容',dot:'blue',text:'切换日由 Moka 实施团队全程陪同，完成生产环境数据最终同步、DNS 切换等操作。上线后提供 30 天免费驻场稳定期支持。'}]},right:{hint:'第 13-14 天 · 正式上线 + 30 天驻场稳定期',tabs:['上线清单','验收报告'],imgs:['',''],mockup:'generic'}},
+    ]},
+  ]
+};
+
+/* ══ STATE ══ */
+let DATA = {};
+let SITE = {};
+let currentLang = 'zh';
+let curNavIndex = 0;
+let curBig = 0, curScene = 0;
+let unsaved = false;
+const ADMIN_USER = 'bjlui';
+const ADMIN_PASS = 'bjlui';
+const ADMIN_SESSION_KEY = 'moka_admin_logged_in';
+
+function isAdminLoggedIn(){
+  return sessionStorage.getItem(ADMIN_SESSION_KEY) === '1';
+}
+
+function setAdminLocked(locked){
+  const page = document.getElementById('admin-page');
+  page.classList.toggle('locked', locked);
+  if(locked) setTimeout(()=>document.getElementById('admin-username')?.focus(), 50);
+}
+
+function loginAdmin(e){
+  if(e) e.preventDefault();
+  const u = document.getElementById('admin-username').value.trim();
+  const p = document.getElementById('admin-password').value;
+  const err = document.getElementById('login-error');
+  if(u === ADMIN_USER && p === ADMIN_PASS){
+    sessionStorage.setItem(ADMIN_SESSION_KEY, '1');
+    err.classList.remove('show');
+    document.getElementById('admin-password').value = '';
+    setAdminLocked(false);
+    fillAdminForms();
+    toast('已登录后台');
+    return false;
+  }
+  err.classList.add('show');
+  return false;
+}
+
+function logoutAdmin(){
+  sessionStorage.removeItem(ADMIN_SESSION_KEY);
+  setAdminLocked(true);
+  toast('已退出后台');
+}
+
+function cloneData(obj){
+  return JSON.parse(JSON.stringify(obj));
+}
+
+function defaultPageLabel(page){
+  if(page === 'slides') return currentLang === 'en' ? 'Product Introduction' : '产品中心';
+  return currentLang === 'en' ? 'Company Introduction' : '公司介绍';
+}
+
+function normalizeLangData(data){
+  const d = data || cloneData(DEFAULT);
+  if(!Array.isArray(d.nav_items) || !d.nav_items.length){
+    d.nav_items = [
+      {label:d.nav1 || defaultPageLabel('hero'), page:'hero'},
+      {label:d.nav2 || defaultPageLabel('slides'), page:'slides'}
+    ];
+  }
+  d.nav_items = d.nav_items
+    .filter(item=>item)
+    .map((item,i)=>({label:item.label ?? (currentLang === 'en' ? `New Tab ${i+1}` : `新导航 ${i+1}`), page:item.page === 'slides' ? 'slides' : 'hero'}));
+  if(!d.nav_items.some(item=>item.page === 'hero')) d.nav_items.unshift({label:d.nav1 || defaultPageLabel('hero'), page:'hero'});
+  if(!d.nav_items.some(item=>item.page === 'slides')) d.nav_items.push({label:d.nav2 || defaultPageLabel('slides'), page:'slides'});
+  d.nav1 = d.nav_items.find(item=>item.page === 'hero')?.label || d.nav_items[0]?.label || defaultPageLabel('hero');
+  d.nav2 = d.nav_items.find(item=>item.page === 'slides')?.label || defaultPageLabel('slides');
+  if(!Array.isArray(d.big_tab_names)) d.big_tab_names = [];
+  if(!Array.isArray(d.big_tabs)) d.big_tabs = [];
+  while(d.big_tab_names.length < d.big_tabs.length) d.big_tab_names.push(d.big_tabs[d.big_tab_names.length].eyebrow || '新大场景');
+  while(d.big_tabs.length < d.big_tab_names.length) d.big_tabs.push(createDefaultBigTab(d.big_tab_names[d.big_tabs.length]));
+  if(!d.big_tabs.length){
+    d.big_tab_names.push('新大场景');
+    d.big_tabs.push(createDefaultBigTab('新大场景'));
+  }
+  d.big_tabs.forEach(tab=>{
+    (tab.scenes||[]).forEach(scene=>{
+      normalizeMidSections(scene);
+    });
+  });
+  return d;
+}
+
+function normalizeMidSections(scene){
+  if(!scene || !scene.mid || !Array.isArray(scene.mid.sections)) return;
+  const quote = scene.mid.sections.find(sec=>sec.type === 'quote');
+  const value = scene.mid.sections.find(sec=>sec.type === 'value');
+  const others = scene.mid.sections.filter(sec=>sec.type !== 'quote' && sec.type !== 'value');
+  if(quote){
+    quote.dot = 'orange';
+    quote.label = currentLang === 'en' ? 'Customer Value' : '客户价值';
+  }
+  if(value){
+    value.dot = 'blue';
+    value.label = currentLang === 'en' ? 'Moka Solution' : 'Moka 方案';
+  }
+  if(quote && value) scene.mid.sections = [value, quote, ...others];
+}
+
+function createDefaultScene(name){
+  const title = name || (currentLang === 'en' ? 'New Scenario' : '新场景');
+  return {
+    name:title,
+    num:'01',
+    tags:[],
+    mid:{title,sections:[
+      {type:'value',label:currentLang === 'en' ? 'Moka Solution' : 'Moka 方案',dot:'blue',items:[
+        currentLang === 'en' ? 'Edit this bullet in Admin' : '在后台编辑这个要点',
+        currentLang === 'en' ? 'Add more details as needed' : '按需要添加更多说明'
+      ]},
+      {type:'quote',label:currentLang === 'en' ? 'Customer Value' : '客户价值',dot:'orange',text:currentLang === 'en' ? 'Describe this value here.' : '在这里描述客户价值。'}
+    ]},
+    right:{hint:currentLang === 'en' ? 'Upload screenshots here' : '在这里上传产品截图',tabs:[currentLang === 'en' ? 'Overview' : '概览'],imgs:[''],mockup:'generic'}
+  };
+}
+
+function renumberScenes(tab){
+  if(!tab || !Array.isArray(tab.scenes)) return;
+  tab.scenes.forEach((scene,i)=>{ scene.num = String(i+1).padStart(2,'0'); });
+  const count = tab.scenes.length;
+  if(tab.navHead){
+    if(tab.navHead.includes('·')) tab.navHead = tab.navHead.replace(/·\s*\d+\s*$/, `· ${count}`);
+    else tab.navHead = `${tab.navHead} · ${count}`;
+  }else{
+    tab.navHead = currentLang === 'en' ? `Scenario List · ${count}` : `场景列表 · ${count}`;
+  }
+}
+
+function createDefaultBigTab(name){
+  const title = name || (currentLang === 'en' ? 'New Tab' : '新大场景');
+  return {
+    eyebrow: currentLang === 'en' ? 'NEW SCENARIO GROUP' : 'NEW SCENARIO GROUP',
+    navHead: currentLang === 'en' ? 'Scenario List · 1' : '场景列表 · 1',
+    scenes:[createDefaultScene(currentLang === 'en' ? 'New Scenario' : '新场景')]
+  };
+}
+
+function createEnglishDefault(){
+  const en = cloneData(DEFAULT);
+  Object.assign(en, {
+    logo_blue: 'Moka',
+    logo_black: ' AI',
+    nav1: 'Company Introduction',
+    nav2: 'Product Introduction',
+    nav_items: [
+      {label:'Company Introduction', page:'hero'},
+      {label:'Product Introduction', page:'slides'}
+    ],
+    hero_eyebrow: 'Next-generation AI recruiting platform',
+    hero_title: 'Make every hiring<br>decision <span class="accent">faster and sharper</span>',
+    hero_desc: 'Powered by large models and recruiting data, Moka covers the full hiring workflow so HR teams can spend less time on repetitive work and more time judging talent.',
+    hero_cta1: 'Explore scenarios ->',
+    hero_cta2: 'Book a demo',
+    stat1_num: '87%',
+    stat1_lbl: 'Resume screening efficiency lift',
+    stat2_num: '3x',
+    stat2_lbl: 'Shorter hiring cycle',
+    stat3_num: '500+',
+    stat3_lbl: 'Enterprise customers',
+    console_title: 'AI Recruiting Console - Live Status',
+    hero_cards: [
+      {icon:'AI',title:'AI Resume Parsing',sub:'Processing 142 resumes...',pill:'Live',pill_color:'#4ADE80',pill_bg:'#16A34A22'},
+      {icon:'>>',title:'Smart Interview Review',sub:'28 AI screens completed',pill:'Today',pill_color:'#FCD34D',pill_bg:'#F59E0B22'},
+      {icon:'%',title:'Role Match Recommendations',sub:'94.2% recommendation accuracy',pill:'+6%',pill_color:'#7C9FFF',pill_bg:'#1A5CFF22'},
+      {icon:'##',title:'Hiring Funnel Analytics',sub:'Weekly report generated',pill:'Report',pill_color:'#9CA3AF',pill_bg:'#6B728022'},
+    ],
+    big_tab_names: ['AI Recruiting Scenarios','AI Product Capabilities','Ecosystem','System Integration','Compliance & Security','Service System','Implementation']
+  });
+
+  const tabMeta = [
+    ['AI RECRUITING SCENARIOS','Scenario List · 9',['Hero Card Drill-through','Team Dashboard','Report Subscription','Workflow Approval','Tasks / CC','Start Live Chat','Calendar Sync','Message Window','Link Preview Card']],
+    ['AI PRODUCT CAPABILITIES','Capability List · 3',['Recruiting-specific LLM','Smart Resume Parsing','AI Interview Assistant']],
+    ['ECOSYSTEM','Partner Types · 3',['Recruiting Channel Integration','Instant Messaging Integration','HR System Ecosystem']],
+    ['SYSTEM INTEGRATION','Integration Capabilities · 3',['REST API Integration','Webhook Push','Low-code Connector']],
+    ['COMPLIANCE & SECURITY','Security Capabilities · 3',['Data Encryption','Level 3 Cybersecurity Certification','Access Control']],
+    ['SERVICE SYSTEM','Service Items · 3',['Customer Success','Technical Support','Training & Enablement']],
+    ['IMPLEMENTATION','Implementation Stages · 4',['Kickoff','Configuration','Testing','Go-live']]
+  ];
+  const genericTabs = ['Overview','Details','Dashboard'];
+  en.big_tabs.forEach((tab, bi)=>{
+    tab.eyebrow = tabMeta[bi][0];
+    tab.navHead = tabMeta[bi][1];
+    tab.scenes.forEach((scene, si)=>{
+      const name = tabMeta[bi][2][si] || scene.name;
+      scene.name = name;
+      scene.mid.title = name;
+      scene.mid.sections.forEach(sec=>{
+        if(sec.type === 'value'){
+          sec.label = 'Moka Solution';
+          sec.dot = 'blue';
+          sec.items = [
+            'Edit this English bullet in Admin',
+            'Keep the message concise for scanning',
+            'Upload a screenshot on the right when ready'
+          ];
+        }else{
+          sec.label = 'Customer Value';
+          sec.dot = 'orange';
+          sec.text = 'This is the English version for this scenario. You can edit the full copy, tab names, hints, and images in Admin after switching the language to EN.';
+        }
+      });
+      scene.right.hint = `Upload or link screenshots for ${name}`;
+      scene.right.tabs = (scene.right.tabs || genericTabs).map((_, i)=>genericTabs[i] || `View ${i+1}`);
+    });
+  });
+  return en;
+}
+
+function createDefaultSite(){
+  return {version:2, langs:{zh:cloneData(DEFAULT), en:createEnglishDefault()}};
+}
+
+function normalizeSite(saved){
+  const base = createDefaultSite();
+  if(saved && saved.langs){
+    base.langs.zh = Object.assign(base.langs.zh, saved.langs.zh || {});
+    base.langs.en = Object.assign(base.langs.en, saved.langs.en || {});
+    base.langs.zh = normalizeLangData(base.langs.zh);
+    base.langs.en = normalizeLangData(base.langs.en);
+    return base;
+  }
+  if(saved && saved.big_tabs){
+    base.langs.zh = Object.assign(base.langs.zh, saved);
+  }
+  base.langs.zh = normalizeLangData(base.langs.zh);
+  base.langs.en = normalizeLangData(base.langs.en);
+  return base;
+}
+
+function activateLang(lang){
+  currentLang = lang === 'en' ? 'en' : 'zh';
+  DATA = SITE.langs[currentLang];
+}
+
+function syncLangButtons(){
+  document.querySelectorAll('.lang-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll(currentLang === 'en' ? '#adm-lang-en,.lang-toggle .lang-btn:nth-child(2)' : '#adm-lang-zh,.lang-toggle .lang-btn:nth-child(1)').forEach(b=>b.classList.add('active'));
+}
+
+function getPageLabel(page){
+  normalizeLangData(DATA);
+  const item = DATA.nav_items.find(nav=>nav.page === page);
+  if(item && item.label) return item.label;
+  return defaultPageLabel(page);
+}
+
+function getAdminTitle(id){
+  const heroLabel = getPageLabel('hero');
+  const scenesLabel = getPageLabel('slides');
+  const titles = {
+    'hero-edit':`${heroLabel} Hero`,
+    'scenes-edit':`${scenesLabel} Content`,
+    'nav-edit':currentLang === 'en' ? 'Navigation Tabs' : '导航栏文字',
+    'bigtab-edit':currentLang === 'en' ? 'Scenario Group Tabs' : '大场景 Tab 标签'
+  };
+  return titles[id] || id;
+}
+
+function syncAdminLabels(){
+  const hero = document.getElementById('adm-menu-hero');
+  const scenes = document.getElementById('adm-menu-scenes');
+  if(hero) hero.textContent = getAdminTitle('hero-edit');
+  if(scenes) scenes.textContent = getAdminTitle('scenes-edit');
+  const activePanel = document.querySelector('.adm-panel.active');
+  if(activePanel){
+    document.getElementById('adm-panel-title').textContent = getAdminTitle(activePanel.id.replace('panel-',''));
+  }
+}
+
+function getEmbeddedSite(){
+  try{
+    const raw = document.getElementById('moka-published-data')?.textContent?.trim();
+    if(raw && raw !== '{}') return JSON.parse(raw);
+  }catch(e){}
+  return null;
+}
+
+function getCurrentSiteForPublish(){
+  if(document.getElementById('admin-page').classList.contains('active') && isAdminLoggedIn()) readFormToData();
+  normalizeLangData(DATA);
+  SITE.langs[currentLang] = DATA;
+  SITE.version = 2;
+  return SITE;
+}
+
+function escapeJsonForScript(site){
+  return JSON.stringify(site)
+    .replace(/</g, '\\u003c')
+    .replace(/>/g, '\\u003e')
+    .replace(/&/g, '\\u0026');
+}
+
+function buildPublishedHtml(){
+  const site = getCurrentSiteForPublish();
+  let html = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+  const data = escapeJsonForScript(site);
+  if(html.includes('<script type="application/json" id="moka-published-data">')){
+    html = html.replace(
+      /<script type="application\/json" id="moka-published-data">[\s\S]*?<\/script>/,
+      `<script type="application/json" id="moka-published-data">${data}<` + `/script>`
+    );
+  }else{
+    html = html.replace('<script>', `<script type="application/json" id="moka-published-data">${data}<` + `/script>\n<script>`);
+  }
+  return html;
+}
+
+function downloadPublishedHtml(){
+  const html = buildPublishedHtml();
+  const blob = new Blob([html], {type:'text/html;charset=utf-8'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'hr-saas-website-updated.html';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(a.href);
+  toast('已导出包含最新内容的 HTML');
+}
+
+function getGithubConfig(){
+  try{ return JSON.parse(localStorage.getItem('moka_github_config') || '{}'); }
+  catch(e){ return {}; }
+}
+
+function openGithubSettings(){
+  const old = getGithubConfig();
+  const owner = prompt('GitHub owner / 用户名或组织名', old.owner || '');
+  if(owner === null) return;
+  const repo = prompt('GitHub repo / 仓库名', old.repo || '');
+  if(repo === null) return;
+  const branch = prompt('Branch / 分支', old.branch || 'main');
+  if(branch === null) return;
+  const path = prompt('HTML 文件路径，例如 index.html', old.path || 'index.html');
+  if(path === null) return;
+  const token = prompt('GitHub Fine-grained Token（只保存在此浏览器 localStorage，不会写进 HTML）', old.token || '');
+  if(token === null) return;
+  localStorage.setItem('moka_github_config', JSON.stringify({owner,repo,branch,path,token}));
+  toast('GitHub 设置已保存');
+}
+
+function toBase64Utf8(str){
+  const bytes = new TextEncoder().encode(str);
+  let binary = '';
+  bytes.forEach(b=>binary += String.fromCharCode(b));
+  return btoa(binary);
+}
+
+async function publishToGithub(){
+  const cfg = getGithubConfig();
+  if(!cfg.owner || !cfg.repo || !cfg.branch || !cfg.path || !cfg.token){
+    toast('请先填写 GitHub 设置');
+    openGithubSettings();
+    return;
+  }
+  if(!confirm(`确定同步到 GitHub？\\n${cfg.owner}/${cfg.repo}:${cfg.branch}/${cfg.path}`)) return;
+  const html = buildPublishedHtml();
+  const api = `https://api.github.com/repos/${encodeURIComponent(cfg.owner)}/${encodeURIComponent(cfg.repo)}/contents/${cfg.path.split('/').map(encodeURIComponent).join('/')}?ref=${encodeURIComponent(cfg.branch)}`;
+  try{
+    const current = await fetch(api, {
+      headers:{Authorization:`Bearer ${cfg.token}`, Accept:'application/vnd.github+json'}
+    });
+    let sha = undefined;
+    if(current.ok){
+      const info = await current.json();
+      sha = info.sha;
+    }else if(current.status !== 404){
+      throw new Error(`读取 GitHub 文件失败：${current.status}`);
+    }
+    const res = await fetch(api.replace(`?ref=${encodeURIComponent(cfg.branch)}`, ''), {
+      method:'PUT',
+      headers:{
+        Authorization:`Bearer ${cfg.token}`,
+        Accept:'application/vnd.github+json',
+        'Content-Type':'application/json'
+      },
+      body:JSON.stringify({
+        message:`Update site content ${new Date().toISOString()}`,
+        content:toBase64Utf8(html),
+        branch:cfg.branch,
+        sha
+      })
+    });
+    if(!res.ok){
+      const err = await res.text();
+      throw new Error(err);
+    }
+    localStorage.setItem('moka_site_data', JSON.stringify(getCurrentSiteForPublish()));
+    toast('已同步到 GitHub，等待 Pages 自动发布');
+  }catch(e){
+    console.error(e);
+    toast('GitHub 同步失败，请检查设置或 Token 权限');
+  }
+}
+
+function loadData(){
+  try{
+    const s = localStorage.getItem('moka_site_data');
+    SITE = normalizeSite(s ? JSON.parse(s) : getEmbeddedSite());
+  }
+  catch(e){ SITE = createDefaultSite(); }
+  activateLang(localStorage.getItem('moka_site_lang') || 'en');
+}
+function saveAll(){
+  readFormToData();
+  normalizeLangData(DATA);
+  SITE.langs[currentLang] = DATA;
+  localStorage.setItem('moka_site_data', JSON.stringify(SITE));
+  localStorage.setItem('moka_site_lang', currentLang);
+  unsaved = false;
+  document.querySelectorAll('.unsaved-dot').forEach(d=>d.remove());
+  renderAll();
+  if(document.getElementById('admin-page').classList.contains('active')) fillAdminForms();
+  toast('✅ 已保存全部修改');
+}
+function resetData(){
+  if(!confirm('确定重置为默认内容？所有修改将丢失。')) return;
+  SITE = createDefaultSite();
+  activateLang(currentLang);
+  localStorage.removeItem('moka_site_data');
+  renderAll();
+  fillAdminForms();
+  toast('↺ 已重置为默认内容');
+}
+function markUnsaved(){
+  unsaved = true;
+}
+function toast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 2500);
+}
+
+/* ══ RENDER FRONTEND ══ */
+function renderAll(){
+  normalizeLangData(DATA);
+  if(curBig >= DATA.big_tabs.length) curBig = Math.max(0, DATA.big_tabs.length - 1);
+  if(curScene >= (DATA.big_tabs[curBig]?.scenes?.length || 0)) curScene = 0;
+  renderNav();
+  renderHero();
+  renderSceneTabs();
+  selectScene(curBig, curScene);
+}
+
+function renderNav(){
+  normalizeLangData(DATA);
+  if(curNavIndex >= DATA.nav_items.length) curNavIndex = Math.max(0, DATA.nav_items.length - 1);
+  document.querySelector('.logo').innerHTML = DATA.logo_blue + '<span>' + DATA.logo_black + '</span>';
+  document.getElementById('nav-links').innerHTML = DATA.nav_items.map((item,i)=>`
+    <div class="nav-link${i===curNavIndex?' active':''}" data-nav-index="${i}" onclick="goNav(${i})">${item.label || (currentLang === 'en' ? 'Untitled' : '未命名')}</div>
+  `).join('');
+}
+
+function renderHero(){
+  document.getElementById('t-eyebrow').textContent = DATA.hero_eyebrow;
+  document.getElementById('t-title').innerHTML = DATA.hero_title;
+  document.getElementById('t-desc').textContent = DATA.hero_desc;
+  document.getElementById('t-cta1').textContent = DATA.hero_cta1;
+  document.getElementById('t-cta2').textContent = DATA.hero_cta2;
+  document.getElementById('t-stat1-num').innerHTML = DATA.stat1_num;
+  document.getElementById('t-stat1-lbl').textContent = DATA.stat1_lbl;
+  document.getElementById('t-stat2-num').innerHTML = DATA.stat2_num;
+  document.getElementById('t-stat2-lbl').textContent = DATA.stat2_lbl;
+  document.getElementById('t-stat3-num').innerHTML = DATA.stat3_num;
+  document.getElementById('t-stat3-lbl').textContent = DATA.stat3_lbl;
+  const consoleTitle = document.getElementById('t-console-title');
+  if(consoleTitle) consoleTitle.textContent = DATA.console_title;
+  // hero image override
+  const va = document.getElementById('hero-visual-area');
+  if(DATA.hero_img){
+    va.innerHTML = `<img src="${DATA.hero_img}" style="width:100%;height:100%;object-fit:contain;border-radius:16px;max-height:360px">`;
+  } else {
+    if(!va.querySelector('.hv-panel')){
+      va.innerHTML = `<div class="hv-panel"><div class="hv-header"><div class="hv-dot" style="background:#FF5F57"></div><div class="hv-dot" style="background:#FEBC2E"></div><div class="hv-dot" style="background:#28C840"></div><div class="hv-title" id="t-console-title">${DATA.console_title}</div></div><div class="hv-cards" id="hero-cards"></div></div>`;
+    }
+  }
+  // cards
+  const hc = document.getElementById('hero-cards');
+  if(hc && DATA.hero_cards){
+    hc.innerHTML = DATA.hero_cards.map(c=>`<div class="hcard"><div class="hcard-icon" style="background:${c.pill_bg||'#1A5CFF22'}">${c.icon}</div><div class="hcard-text"><div class="t">${c.title}</div><div class="s">${c.sub}</div></div><div class="hcard-pill" style="color:${c.pill_color};background:${c.pill_bg}">${c.pill}</div></div>`).join('');
+  }
+}
+
+function renderSceneTabs(){
+  normalizeLangData(DATA);
+  const el = document.getElementById('scene-tabs-el');
+  el.innerHTML = (DATA.big_tab_names||DEFAULT.big_tab_names).map((n,i)=>`<div class="scene-tab${i===curBig?' active':''}" onclick="goBigTab(${i},this)">${n || (currentLang === 'en' ? 'Untitled' : '未命名')}</div>`).join('');
+}
+
+function goBigTab(idx, el){
+  curBig=idx; curScene=0;
+  document.querySelectorAll('.scene-tab').forEach((t,i)=>t.classList.toggle('active',i===idx));
+  const tab = DATA.big_tabs[idx];
+  document.getElementById('scene-eyebrow').textContent = tab.eyebrow;
+  selectScene(idx,0);
+}
+
+function selectScene(bigIdx, sceneIdx){
+  normalizeLangData(DATA);
+  if(bigIdx >= DATA.big_tabs.length) bigIdx = Math.max(0, DATA.big_tabs.length - 1);
+  if(sceneIdx >= (DATA.big_tabs[bigIdx]?.scenes?.length || 0)) sceneIdx = 0;
+  curBig=bigIdx; curScene=sceneIdx;
+  const tab = DATA.big_tabs[bigIdx];
+  document.getElementById('snav-head').textContent = tab.navHead;
+  // sidenav
+  const container = document.getElementById('snav-items');
+  container.innerHTML = '';
+  tab.scenes.forEach((s,i)=>{
+    const div = document.createElement('div');
+    div.className='snav-item'+(i===sceneIdx?' active':'');
+    div.innerHTML=`<span class="snav-num">${s.num}</span><div class="snav-body"><div class="snav-name">${s.name || (currentLang === 'en' ? 'Untitled' : '未命名')}</div>${s.tags&&s.tags.length?'<div class="snav-tags">'+s.tags.map(t=>`<span class="snav-tag">${t}</span>`).join('')+'</div>':''}</div>${i===sceneIdx?'<span class="snav-arrow">›</span>':''}`;
+    div.onclick=()=>selectScene(bigIdx,i);
+    container.appendChild(div);
+  });
+  // mid
+  const scene = tab.scenes[sceneIdx];
+  const mid = scene.mid;
+  let html=`<div class="smid-title-row"><div class="smid-accent"></div><div class="smid-title">${mid.title}</div></div>`;
+  mid.sections.forEach(sec=>{
+    html+=`<div class="smid-section"><div class="smid-label"><div class="smid-dot ${sec.dot}"></div>${sec.label}</div>`;
+    if(sec.type==='value') html+=`<div class="smid-items">`+sec.items.map(it=>`<div class="smid-item">${it}</div>`).join('')+`</div>`;
+    else if(sec.type==='quote') html+=`<div class="smid-quote">${sec.text}</div>`;
+    html+=`</div>`;
+  });
+  document.getElementById('smid-card').innerHTML=html;
+  // right
+  const r=scene.right;
+  const tabs=r.tabs.map((t,i)=>`<div class="sright-tab${i===0?' active':''}" onclick="switchRightTab(this,${i},${bigIdx},${sceneIdx})">${t}</div>`).join('');
+  document.getElementById('sright-card').innerHTML=`<div class="sright-hint">${r.hint}</div><div class="sright-tabs">${tabs}</div><div class="sright-body" id="sright-body-inner">${getRightBody(r,0,bigIdx,sceneIdx)}</div>`;
+}
+
+function getRightBody(r, tabIdx, bigIdx, sceneIdx){
+  const mockup = r.mockup||'generic';
+  const img = (r.imgs&&r.imgs[tabIdx])||'';
+  if(img) return `<div class="sright-img-area"><div class="sright-img"><img src="${img}" alt=""></div></div>`;
+  if(mockup==='feishu-hero'){
+    return `<div class="fmock" style="flex:1"><div class="fmock-bar"><div class="fmock-dot" style="background:#FF5F57"></div><div class="fmock-dot" style="background:#FEBC2E"></div><div class="fmock-dot" style="background:#28C840"></div><div class="fmock-title">Feishu Desktop</div></div><div class="fmock-body"><div class="fmock-sidebar"><div class="fmock-icon blue">M</div><div class="fmock-icon on">💬</div><div class="fmock-icon">📅</div><div class="fmock-icon">📁</div></div><div class="fmock-main"><div class="fmock-mainbar">消息</div><div class="fmock-content"><div style="font-size:11px;color:var(--c-muted);margin-bottom:10px">悬浮员工姓名，英雄卡片弹出 ↓</div><div class="hero-card-popup"><div class="hcp-header"><div class="hcp-avatar">甘</div><div><div class="hcp-name">甘雪芳</div><div class="hcp-sub">人力资源部 · 招聘经理</div></div></div><div class="hcp-row"><span class="hcp-label">员工档案</span><span class="hcp-link">查看详情</span></div><div class="hcp-row"><span class="hcp-label">员工目标</span><span class="hcp-link">查看详情</span></div></div></div></div></div></div>`;
+  }
+  return `<div class="sright-img-area"><div class="sright-img"><div class="img-placeholder"><div class="ph-icon">🖼</div><div>此处放置产品截图</div><div style="font-size:11px;color:#9CA3AF;margin-top:4px">在后台编辑中上传图片</div></div></div></div>`;
+}
+
+function switchRightTab(el, tabIdx, bigIdx, sceneIdx){
+  el.closest('.sright-tabs').querySelectorAll('.sright-tab').forEach((t,i)=>t.classList.toggle('active',i===tabIdx));
+  const r = DATA.big_tabs[bigIdx].scenes[sceneIdx].right;
+  document.getElementById('sright-body-inner').innerHTML = getRightBody(r, tabIdx, bigIdx, sceneIdx);
+}
+
+/* ══ ADMIN FORMS ══ */
+function fillAdminForms(){
+  syncLangButtons();
+  // hero
+  setValue('f-hero-eyebrow', DATA.hero_eyebrow);
+  setValue('f-hero-title', DATA.hero_title);
+  setValue('f-hero-desc', DATA.hero_desc);
+  setValue('f-hero-cta1', DATA.hero_cta1);
+  setValue('f-hero-cta2', DATA.hero_cta2);
+  setValue('f-stat1-num', DATA.stat1_num);
+  setValue('f-stat1-lbl', DATA.stat1_lbl);
+  setValue('f-stat2-num', DATA.stat2_num);
+  setValue('f-stat2-lbl', DATA.stat2_lbl);
+  setValue('f-stat3-num', DATA.stat3_num);
+  setValue('f-stat3-lbl', DATA.stat3_lbl);
+  setValue('f-console-title', DATA.console_title);
+  setValue('f-logo-blue', DATA.logo_blue);
+  setValue('f-logo-black', DATA.logo_black);
+  renderNavEditor();
+  // hero image
+  const heroPreview = document.getElementById('hero-img-preview');
+  if(heroPreview){
+    if(DATA.hero_img){ heroPreview.src=DATA.hero_img; heroPreview.classList.add('show'); }
+    else { heroPreview.src=''; heroPreview.classList.remove('show'); }
+  }
+  // hero cards
+  renderHeroCardsEditor();
+  // big tabs editor
+  renderBigTabEditor();
+  // scene selectors
+  buildBigSel();
+  syncAdminLabels();
+}
+
+function setValue(id, val){
+  const el = document.getElementById(id);
+  if(el) el.value = val||'';
+}
+
+function readFormToData(){
+  DATA.hero_eyebrow = v('f-hero-eyebrow');
+  DATA.hero_title = v('f-hero-title');
+  DATA.hero_desc = v('f-hero-desc');
+  DATA.hero_cta1 = v('f-hero-cta1');
+  DATA.hero_cta2 = v('f-hero-cta2');
+  DATA.stat1_num = v('f-stat1-num');
+  DATA.stat1_lbl = v('f-stat1-lbl');
+  DATA.stat2_num = v('f-stat2-num');
+  DATA.stat2_lbl = v('f-stat2-lbl');
+  DATA.stat3_num = v('f-stat3-num');
+  DATA.stat3_lbl = v('f-stat3-lbl');
+  DATA.console_title = v('f-console-title');
+  DATA.logo_blue = v('f-logo-blue');
+  DATA.logo_black = v('f-logo-black');
+  DATA.nav1 = DATA.nav_items?.[0]?.label || DATA.nav1;
+  DATA.nav2 = DATA.nav_items?.find(item=>item.page === 'slides')?.label || DATA.nav_items?.[1]?.label || DATA.nav2;
+  // big tab names
+  document.querySelectorAll('.bigtab-input').forEach((el,i)=>{ if(DATA.big_tab_names[i]!==undefined) DATA.big_tab_names[i]=el.value; });
+}
+function v(id){ const el=document.getElementById(id); return el?el.value:''; }
+
+/* nav editor */
+function renderNavEditor(){
+  normalizeLangData(DATA);
+  const c = document.getElementById('nav-editor');
+  if(!c) return;
+  const heroLabel = getPageLabel('hero');
+  const slidesLabel = getPageLabel('slides');
+  c.innerHTML = DATA.nav_items.map((item,i)=>`
+    <div class="adm-card" style="margin-bottom:10px">
+      <div class="adm-card-head open" onclick="toggleCard(this)" style="padding:10px 16px"><h3>导航 Tab ${i+1}: ${item.label || (currentLang === 'en' ? 'Untitled' : '未命名')}</h3><span class="chevron">▼</span></div>
+      <div class="adm-card-body open" style="padding:14px">
+        <div class="adm-field"><div class="adm-label">显示文字</div>
+          <input class="adm-input" value="${item.label}" oninput="DATA.nav_items[${i}].label=this.value;syncAdminLabels();renderNav();markUnsaved()" onblur="renderNavEditor()">
+        </div>
+        <div class="adm-field"><div class="adm-label">点击跳转</div>
+          <select class="inline-select" onchange="DATA.nav_items[${i}].page=this.value;syncAdminLabels();renderNav();markUnsaved()">
+            <option value="hero"${item.page==='hero'?' selected':''}>${heroLabel}</option>
+            <option value="slides"${item.page==='slides'?' selected':''}>${slidesLabel}</option>
+          </select>
+        </div>
+        <button class="adm-btn danger" style="font-size:11px;padding:5px 10px" onclick="removeNavItem(${i})">删除此导航 Tab</button>
+      </div>
+    </div>`).join('');
+}
+
+function addNavItem(){
+  normalizeLangData(DATA);
+  DATA.nav_items.push({label:currentLang === 'en' ? 'New Tab' : '新导航', page:'slides'});
+  renderNavEditor();
+  syncAdminLabels();
+  renderNav();
+  markUnsaved();
+}
+
+function removeNavItem(i){
+  normalizeLangData(DATA);
+  if(DATA.nav_items.length <= 1){ toast('至少保留 1 个导航 Tab'); return; }
+  const item = DATA.nav_items[i];
+  if(item?.page === 'slides' && DATA.nav_items.filter(nav=>nav.page === 'slides').length <= 1){
+    toast('产品中心为必保留模块，不能删除');
+    return;
+  }
+  if(item?.page === 'hero' && DATA.nav_items.filter(nav=>nav.page === 'hero').length <= 1){
+    toast('公司介绍为必保留模块，不能删除');
+    return;
+  }
+  if(!confirm('确定删除这个导航 Tab？')) return;
+  DATA.nav_items.splice(i,1);
+  DATA.nav1 = DATA.nav_items[0]?.label || DATA.nav1;
+  DATA.nav2 = DATA.nav_items.find(item=>item.page === 'slides')?.label || DATA.nav_items[1]?.label || DATA.nav2;
+  renderNavEditor();
+  syncAdminLabels();
+  renderNav();
+  markUnsaved();
+}
+
+/* hero cards editor */
+function renderHeroCardsEditor(){
+  const c = document.getElementById('hero-cards-editor');
+  c.innerHTML = (DATA.hero_cards||[]).map((card,i)=>`
+    <div class="adm-card" style="margin-bottom:10px">
+      <div class="adm-card-head open" onclick="toggleCard(this)" style="padding:10px 16px"><h3>卡片 ${i+1}: ${card.title}</h3><span class="chevron">▼</span></div>
+      <div class="adm-card-body open" style="padding:14px">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div class="adm-field"><div class="adm-label">图标 Emoji</div><input class="adm-input" value="${card.icon}" oninput="DATA.hero_cards[${i}].icon=this.value;markUnsaved()"></div>
+          <div class="adm-field"><div class="adm-label">标题</div><input class="adm-input" value="${card.title}" oninput="DATA.hero_cards[${i}].title=this.value;markUnsaved()"></div>
+          <div class="adm-field"><div class="adm-label">副标题</div><input class="adm-input" value="${card.sub}" oninput="DATA.hero_cards[${i}].sub=this.value;markUnsaved()"></div>
+          <div class="adm-field"><div class="adm-label">标签文字</div><input class="adm-input" value="${card.pill}" oninput="DATA.hero_cards[${i}].pill=this.value;markUnsaved()"></div>
+          <div class="adm-field"><div class="adm-label">标签颜色</div><input class="adm-input" value="${card.pill_color}" oninput="DATA.hero_cards[${i}].pill_color=this.value;markUnsaved()"></div>
+          <div class="adm-field"><div class="adm-label">背景颜色</div><input class="adm-input" value="${card.pill_bg}" oninput="DATA.hero_cards[${i}].pill_bg=this.value;markUnsaved()"></div>
+        </div>
+        <button class="adm-btn danger" style="margin-top:8px;font-size:11px;padding:5px 10px" onclick="removeHeroCard(${i})">删除此卡片</button>
+      </div>
+    </div>`).join('');
+}
+function addHeroCard(){
+  DATA.hero_cards.push({icon:'⭐',title:'新卡片',sub:'描述文字',pill:'标签',pill_color:'#7C9FFF',pill_bg:'#1A5CFF22'});
+  renderHeroCardsEditor(); markUnsaved();
+}
+function removeHeroCard(i){ DATA.hero_cards.splice(i,1); renderHeroCardsEditor(); markUnsaved(); }
+
+/* big tab name editor */
+function renderBigTabEditor(){
+  const c = document.getElementById('bigtab-editor');
+  c.innerHTML = (DATA.big_tab_names||[]).map((n,i)=>`
+    <div class="adm-card" style="margin-bottom:12px">
+      <div class="adm-card-head open" onclick="toggleCard(this)" style="padding:10px 16px"><h3>Tab ${i+1}: ${n || (currentLang === 'en' ? 'Untitled' : '未命名')}</h3><span class="chevron">▼</span></div>
+      <div class="adm-card-body open" style="padding:14px">
+        <div class="adm-field"><div class="adm-label">前台 Tab 名称</div>
+        <input class="adm-input bigtab-input" value="${n}" oninput="DATA.big_tab_names[${i}]=this.value;markUnsaved()"></div>
+        <div class="adm-field"><div class="adm-label">英文小标题 Eyebrow</div>
+        <input class="adm-input" value="${DATA.big_tabs[i].eyebrow||''}" oninput="DATA.big_tabs[${i}].eyebrow=this.value;markUnsaved()"></div>
+        <div class="adm-field"><div class="adm-label">左侧列表标题</div>
+        <input class="adm-input" value="${DATA.big_tabs[i].navHead||''}" oninput="DATA.big_tabs[${i}].navHead=this.value;markUnsaved()"></div>
+        <button class="adm-btn danger" style="font-size:11px;padding:5px 10px" onclick="removeBigTab(${i})">删除此大场景 Tab</button>
+      </div>
+    </div>`).join('');
+}
+
+function addBigTab(){
+  normalizeLangData(DATA);
+  if(!Array.isArray(DATA.big_tab_names)) DATA.big_tab_names = [];
+  if(!Array.isArray(DATA.big_tabs)) DATA.big_tabs = [];
+  const name = currentLang === 'en' ? 'New Scenario Group' : '新大场景';
+  DATA.big_tab_names.push(name);
+  DATA.big_tabs.push(createDefaultBigTab(name));
+  curBig = DATA.big_tabs.length - 1;
+  curScene = 0;
+  renderBigTabEditor();
+  if(document.getElementById('adm-big-sel')) buildBigSel();
+  renderAll();
+  markUnsaved();
+  toast(currentLang === 'en' ? 'Scenario group added' : '已添加大场景 Tab');
+}
+
+function removeBigTab(i){
+  normalizeLangData(DATA);
+  if(DATA.big_tabs.length <= 1){ toast('至少保留 1 个大场景 Tab'); return; }
+  if(!confirm('确定删除这个大场景 Tab？其中的子场景内容也会一起删除。')) return;
+  DATA.big_tab_names.splice(i,1);
+  DATA.big_tabs.splice(i,1);
+  if(curBig >= DATA.big_tabs.length) curBig = DATA.big_tabs.length - 1;
+  curScene = 0;
+  renderBigTabEditor();
+  buildBigSel();
+  renderAll();
+  markUnsaved();
+}
+
+/* scene editor */
+function buildBigSel(){
+  const sel = document.getElementById('adm-big-sel');
+  normalizeLangData(DATA);
+  sel.innerHTML = (DATA.big_tab_names||[]).map((n,i)=>`<option value="${i}">${n || (currentLang === 'en' ? 'Untitled' : '未命名')}</option>`).join('');
+  sel.value = String(Math.min(curBig, DATA.big_tab_names.length - 1));
+  buildSceneSel();
+}
+function buildSceneSel(){
+  const bigIdx = parseInt(document.getElementById('adm-big-sel').value)||0;
+  const tab = DATA.big_tabs[bigIdx];
+  renumberScenes(tab);
+  const sel = document.getElementById('adm-scene-sel');
+  sel.innerHTML = (tab.scenes||[]).map((s,i)=>`<option value="${i}">${s.num} ${s.name || (currentLang === 'en' ? 'Untitled' : '未命名')}</option>`).join('');
+  sel.value = String(Math.min(curScene, (tab.scenes||[]).length - 1));
+  loadSceneDetail();
+}
+function loadSceneEditor(){
+  curBig = parseInt(document.getElementById('adm-big-sel').value)||0;
+  curScene = 0;
+  buildSceneSel();
+}
+function loadSceneDetail(){
+  const bigIdx = parseInt(document.getElementById('adm-big-sel').value)||0;
+  const sceneIdx = parseInt(document.getElementById('adm-scene-sel').value)||0;
+  curBig = bigIdx;
+  curScene = sceneIdx;
+  renumberScenes(DATA.big_tabs[bigIdx]);
+  const scene = DATA.big_tabs[bigIdx].scenes[sceneIdx];
+  normalizeMidSections(scene);
+  const mid = scene.mid;
+  const right = scene.right;
+  let html = `
+    <div class="adm-card">
+      <div class="adm-card-head open" onclick="toggleCard(this)"><h3>📝 基本信息</h3><span class="chevron">▼</span></div>
+      <div class="adm-card-body open">
+        <div class="adm-field"><div class="adm-label">场景名称（左侧导航显示）</div><input class="adm-input" value="${scene.name}" oninput="DATA.big_tabs[${bigIdx}].scenes[${sceneIdx}].name=this.value;markUnsaved()"></div>
+        <div class="adm-field"><div class="adm-label">子标签（逗号分隔）</div><input class="adm-input" value="${(scene.tags||[]).join(',')}" oninput="DATA.big_tabs[${bigIdx}].scenes[${sceneIdx}].tags=this.value.split(',').filter(t=>t.trim());markUnsaved()"></div>
+        <div class="adm-field"><div class="adm-label">中栏标题</div><input class="adm-input" value="${mid.title}" oninput="DATA.big_tabs[${bigIdx}].scenes[${sceneIdx}].mid.title=this.value;markUnsaved()"></div>
+      </div>
+    </div>`;
+
+  // sections editor
+  mid.sections.forEach((sec, si)=>{
+    html += `<div class="adm-card">
+      <div class="adm-card-head open" onclick="toggleCard(this)"><h3>${sec.type==='value'?'📋':'💬'} ${sec.label}</h3><span class="chevron">▼</span></div>
+      <div class="adm-card-body open">
+        <div class="adm-field"><div class="adm-label">标签文字</div><input class="adm-input" value="${sec.label}" oninput="DATA.big_tabs[${bigIdx}].scenes[${sceneIdx}].mid.sections[${si}].label=this.value;markUnsaved()"></div>`;
+    if(sec.type==='value'){
+      html += `<div class="adm-field"><div class="adm-label">要点列表</div><div class="list-editor" id="list-${bigIdx}-${sceneIdx}-${si}">`;
+      sec.items.forEach((item,ii)=>{
+        html += `<div class="list-item-row"><input value="${item}" oninput="DATA.big_tabs[${bigIdx}].scenes[${sceneIdx}].mid.sections[${si}].items[${ii}]=this.value;markUnsaved()"><button class="list-del" onclick="removeItem(${bigIdx},${sceneIdx},${si},${ii})">×</button></div>`;
+      });
+      html += `</div><button class="list-add" onclick="addItem(${bigIdx},${sceneIdx},${si})">＋ 添加要点</button></div>`;
+    } else if(sec.type==='quote'){
+      html += `<div class="adm-field"><div class="adm-label">方案说明文字</div><textarea class="adm-textarea" rows="4" oninput="DATA.big_tabs[${bigIdx}].scenes[${sceneIdx}].mid.sections[${si}].text=this.value;markUnsaved()">${sec.text}</textarea></div>`;
+    }
+    html += `</div></div>`;
+  });
+
+  // right card
+  html += `<div class="adm-card">
+    <div class="adm-card-head open" onclick="toggleCard(this)"><h3>🖼 右侧图片区域</h3><span class="chevron">▼</span></div>
+    <div class="adm-card-body open">
+      <div class="adm-field"><div class="adm-label">提示文字（蓝点 hint）</div><input class="adm-input" value="${right.hint}" oninput="DATA.big_tabs[${bigIdx}].scenes[${sceneIdx}].right.hint=this.value;markUnsaved()"></div>
+      ${right.tabs.map((tab,ti)=>`
+      <div class="adm-field">
+        <div class="adm-label">Tab ${ti+1} 名称</div>
+        <input class="adm-input" value="${tab}" oninput="DATA.big_tabs[${bigIdx}].scenes[${sceneIdx}].right.tabs[${ti}]=this.value;markUnsaved()" onblur="loadSceneDetail()">
+      </div>
+      <div class="adm-field">
+        <div class="adm-label">Tab ${ti+1}「${tab}」图片</div>
+        <div class="img-uploader">
+          <img class="img-preview ${(right.imgs&&right.imgs[ti])?'show':''}" src="${(right.imgs&&right.imgs[ti])||''}" id="rimg-${bigIdx}-${sceneIdx}-${ti}">
+          <div class="img-actions">
+            <label class="upload-btn">📁 上传图片<input type="file" accept="image/*" style="display:none" onchange="handleSceneImg(event,${bigIdx},${sceneIdx},${ti})"></label>
+            <button class="upload-btn" onclick="clearSceneImg(${bigIdx},${sceneIdx},${ti})">🗑 清除</button>
+          </div>
+          <div class="img-url-row">
+            <input type="text" placeholder="输入图片 URL..." id="rimg-url-${bigIdx}-${sceneIdx}-${ti}">
+            <button onclick="applySceneImgUrl(${bigIdx},${sceneIdx},${ti})">应用</button>
+          </div>
+        </div>
+      </div>`).join('')}
+    </div>
+  </div>`;
+  document.getElementById('scene-detail-editor').innerHTML = html;
+}
+
+function addScene(){
+  normalizeLangData(DATA);
+  const bigIdx = parseInt(document.getElementById('adm-big-sel').value)||curBig||0;
+  const tab = DATA.big_tabs[bigIdx];
+  const sceneName = currentLang === 'en' ? 'New Scenario' : '新子场景';
+  tab.scenes.push(createDefaultScene(sceneName));
+  renumberScenes(tab);
+  curBig = bigIdx;
+  curScene = tab.scenes.length - 1;
+  buildSceneSel();
+  renderAll();
+  markUnsaved();
+  toast(currentLang === 'en' ? 'Scenario added' : '已添加子场景');
+}
+
+function removeScene(){
+  normalizeLangData(DATA);
+  const bigIdx = parseInt(document.getElementById('adm-big-sel').value)||curBig||0;
+  const sceneIdx = parseInt(document.getElementById('adm-scene-sel').value)||curScene||0;
+  const tab = DATA.big_tabs[bigIdx];
+  if(!tab || tab.scenes.length <= 1){ toast('至少保留 1 个子场景'); return; }
+  if(!confirm('确定删除当前子场景？其中的文字和图片也会一起删除。')) return;
+  tab.scenes.splice(sceneIdx,1);
+  renumberScenes(tab);
+  curBig = bigIdx;
+  curScene = Math.min(sceneIdx, tab.scenes.length - 1);
+  buildSceneSel();
+  renderAll();
+  markUnsaved();
+  toast(currentLang === 'en' ? 'Scenario deleted' : '已删除子场景');
+}
+
+function addItem(bi,si,seci){
+  DATA.big_tabs[bi].scenes[si].mid.sections[seci].items.push('新要点');
+  loadSceneDetail(); markUnsaved();
+}
+function removeItem(bi,si,seci,ii){
+  DATA.big_tabs[bi].scenes[si].mid.sections[seci].items.splice(ii,1);
+  loadSceneDetail(); markUnsaved();
+}
+
+/* ══ IMAGE HANDLERS ══ */
+function handleImgUpload(e, key, previewId){
+  const file = e.target.files[0]; if(!file) return;
+  const r = new FileReader();
+  r.onload = ev => {
+    DATA[key] = ev.target.result;
+    const p = document.getElementById(previewId); p.src=ev.target.result; p.classList.add('show');
+    markUnsaved();
+  };
+  r.readAsDataURL(file);
+}
+function clearImg(key, previewId){
+  DATA[key]='';
+  const p=document.getElementById(previewId); p.src=''; p.classList.remove('show');
+  markUnsaved();
+}
+function applyImgUrl(inputId, key, previewId){
+  const url = document.getElementById(inputId).value.trim(); if(!url) return;
+  DATA[key]=url;
+  const p=document.getElementById(previewId); p.src=url; p.classList.add('show');
+  markUnsaved(); toast('图片 URL 已应用');
+}
+function handleSceneImg(e, bi, si, ti){
+  const file = e.target.files[0]; if(!file) return;
+  const r = new FileReader();
+  r.onload = ev => {
+    if(!DATA.big_tabs[bi].scenes[si].right.imgs) DATA.big_tabs[bi].scenes[si].right.imgs=[];
+    DATA.big_tabs[bi].scenes[si].right.imgs[ti] = ev.target.result;
+    const p=document.getElementById(`rimg-${bi}-${si}-${ti}`); p.src=ev.target.result; p.classList.add('show');
+    markUnsaved(); toast('图片已上传');
+  };
+  r.readAsDataURL(file);
+}
+function clearSceneImg(bi,si,ti){
+  if(DATA.big_tabs[bi].scenes[si].right.imgs) DATA.big_tabs[bi].scenes[si].right.imgs[ti]='';
+  const p=document.getElementById(`rimg-${bi}-${si}-${ti}`); p.src=''; p.classList.remove('show');
+  markUnsaved();
+}
+function applySceneImgUrl(bi,si,ti){
+  const url=document.getElementById(`rimg-url-${bi}-${si}-${ti}`).value.trim(); if(!url) return;
+  if(!DATA.big_tabs[bi].scenes[si].right.imgs) DATA.big_tabs[bi].scenes[si].right.imgs=[];
+  DATA.big_tabs[bi].scenes[si].right.imgs[ti]=url;
+  const p=document.getElementById(`rimg-${bi}-${si}-${ti}`); p.src=url; p.classList.add('show');
+  markUnsaved(); toast('图片 URL 已应用');
+}
+
+/* ══ ADMIN UI HELPERS ══ */
+function showAdmPanel(id, el){
+  if(isAdminLoggedIn()) readFormToData();
+  syncAdminLabels();
+  document.querySelectorAll('.adm-panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+  document.querySelectorAll('.adm-item').forEach(i=>i.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('adm-panel-title').textContent = getAdminTitle(id);
+  if(id === 'nav-edit') renderNavEditor();
+  if(id === 'bigtab-edit') renderBigTabEditor();
+  if(id === 'scenes-edit') buildBigSel();
+}
+function toggleCard(head){
+  head.classList.toggle('open');
+  const body=head.nextElementSibling;
+  body.classList.toggle('open');
+}
+
+/* ══ PAGE NAV ══ */
+function firstNavIndexForPage(page){
+  normalizeLangData(DATA);
+  const idx = DATA.nav_items.findIndex(item=>item.page === page);
+  return idx >= 0 ? idx : 0;
+}
+
+function goNav(idx){
+  normalizeLangData(DATA);
+  const item = DATA.nav_items[idx];
+  if(!item) return;
+  curNavIndex = idx;
+  goPage(item.page, idx);
+}
+
+function goPage(id, navIndex){
+  const leavingAdmin = document.getElementById('admin-page').classList.contains('active') && isAdminLoggedIn();
+  if(id!=='admin' && leavingAdmin) readFormToData();
+  if(id !== 'admin'){
+    curNavIndex = Number.isInteger(navIndex) ? navIndex : firstNavIndexForPage(id);
+  }
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  const map={hero:'hero',slides:'slides-page',admin:'admin-page'};
+  document.getElementById(map[id]).classList.add('active');
+  if(id==='admin'){
+    setAdminLocked(!isAdminLoggedIn());
+    if(isAdminLoggedIn()) fillAdminForms();
+  }
+  renderNav();
+  if(id!=='admin') renderAll();
+}
+
+function setLang(l,el){
+  const inAdmin = document.getElementById('admin-page').classList.contains('active') && isAdminLoggedIn();
+  if(inAdmin) readFormToData();
+  SITE.langs[currentLang] = DATA;
+  activateLang(l);
+  localStorage.setItem('moka_site_lang', currentLang);
+  syncLangButtons();
+  renderAll();
+  if(inAdmin) fillAdminForms();
+  toast(currentLang === 'en' ? 'Switched to English' : '已切换到中文');
+}
+
+/* ══ INIT ══ */
+loadData();
+renderAll();
+syncLangButtons();
+setAdminLocked(!isAdminLoggedIn());
+</script>
+</body>
+</html>
