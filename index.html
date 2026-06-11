@@ -265,7 +265,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);color:var(--c-text
 </head>
 <body>
 
-<div id="toast" class="show">已登录后台</div>
+<div id="toast"></div>
 <div id="media-lightbox" onclick="closeMediaLightbox(event)">
   <div class="lightbox-inner">
     <button class="lightbox-close" onclick="closeMediaLightbox(event)" aria-label="关闭">×</button>
@@ -1080,7 +1080,6 @@ async function loginAdmin(e){
     document.getElementById('admin-password').value = '';
     setAdminLocked(false);
     fillAdminForms();
-    toast('已登录后台');
     return false;
   }
   err.classList.add('show');
@@ -1644,7 +1643,6 @@ function saveAll(){
   document.querySelectorAll('.unsaved-dot').forEach(d=>d.remove());
   renderAll();
   if(document.getElementById('admin-page').classList.contains('active')) fillAdminForms();
-  toast('✅ 已保存全部修改');
 }
 function resetData(){
   if(!confirm('确定重置为默认内容？所有修改将丢失。')) return;
@@ -2852,6 +2850,7 @@ document.addEventListener('keydown', e=>{
   if(e.key === 'Escape') closeMediaLightbox();
 });
 </script>
+
 
 
 
