@@ -1059,7 +1059,11 @@ function isAdminLoggedIn(){
 function setAdminLocked(locked){
   const page = document.getElementById('admin-page');
   page.classList.toggle('locked', locked);
-  if(locked) setTimeout(()=>document.getElementById('admin-username')?.focus(), 50);
+  if(locked && page.classList.contains('active')){
+    setTimeout(()=>{
+      if(page.classList.contains('active')) document.getElementById('admin-username')?.focus();
+    }, 50);
+  }
 }
 
 async function sha256Hex(text){
@@ -2844,7 +2848,6 @@ function setLang(l,el){
 loadData();
 renderAll();
 syncLangButtons();
-setAdminLocked(!isAdminLoggedIn());
 goPage('hero');
 document.addEventListener('keydown', e=>{
   if(e.key === 'Escape') closeMediaLightbox();
