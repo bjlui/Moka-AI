@@ -265,7 +265,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);color:var(--c-text
 </head>
 <body>
 
-<div id="toast">✅ 已保存全部修改</div>
+<div id="toast" class="show">已登录后台</div>
 <div id="media-lightbox" onclick="closeMediaLightbox(event)">
   <div class="lightbox-inner">
     <button class="lightbox-close" onclick="closeMediaLightbox(event)" aria-label="关闭">×</button>
@@ -277,9 +277,9 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);color:var(--c-text
 <nav id="nav">
   <div class="logo" onclick="goPage('hero')">Moka<span> AI</span></div>
   <div class="nav-links" id="nav-links">
-    <div class="nav-link" data-nav-index="0" onclick="goNav(0)">Overview</div>
+    <div class="nav-link active" data-nav-index="0" onclick="goNav(0)">Overview</div>
   
-    <div class="nav-link active" data-nav-index="1" onclick="goNav(1)">Clients</div>
+    <div class="nav-link" data-nav-index="1" onclick="goNav(1)">Clients</div>
   
     <div class="nav-link" data-nav-index="2" onclick="goNav(2)">Scenario Center</div>
   </div>
@@ -2852,6 +2852,7 @@ document.addEventListener('keydown', e=>{
   if(e.key === 'Escape') closeMediaLightbox();
 });
 </script>
+
 
 
 
