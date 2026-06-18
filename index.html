@@ -185,13 +185,15 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);color:var(--c-text
 .sright-card{flex:1;background:#fff;border:1px solid var(--c-border);border-radius:12px;display:flex;flex-direction:column;overflow:hidden;min-width:0}
 .sright-hint{font-size:12px;color:var(--c-muted);padding:16px 20px 10px;display:flex;align-items:center;gap:6px;flex-shrink:0;border-bottom:1px solid var(--c-border)}
 .sright-hint::before{content:'●';color:var(--c-brand);font-size:8px;flex-shrink:0}
-.sright-tabs{display:flex;padding:10px 16px 0;gap:4px;flex-shrink:0}
-.sright-tab{font-size:12px;padding:7px 14px;border-radius:6px;cursor:pointer;color:var(--tab-color,var(--c-muted));border:1px solid var(--tab-border,var(--c-border));background:var(--tab-soft,#fff);transition:all .18s;user-select:none;white-space:nowrap}
+.sright-tabs{display:flex;flex-wrap:wrap;align-content:flex-start;padding:10px 16px 0;gap:6px;flex-shrink:0}
+.sright-tab{flex:0 0 auto;font-size:12px;padding:7px 14px;border-radius:6px;cursor:pointer;color:var(--tab-color,var(--c-muted));border:1px solid var(--tab-border,var(--c-border));background:var(--tab-soft,#fff);transition:all .18s;user-select:none;white-space:nowrap}
 .sright-tab.active{background:var(--tab-color,var(--c-brand));color:#fff;border-color:var(--tab-color,var(--c-brand));font-weight:600}
 .sright-body{flex:1;padding:12px 16px 16px;overflow:hidden;display:flex;flex-direction:column}
 .sright-img-area{flex:1;display:flex;flex-direction:column;gap:8px;overflow:hidden}
 .sright-img{flex:1;border-radius:8px;overflow:hidden;border:1px solid var(--c-border);display:flex;align-items:center;justify-content:center;background:#fff;min-height:0}
 .sright-img img{width:100%;height:100%;object-fit:contain;background:#fff}
+.sright-video-area{flex:1;display:flex;align-items:center;justify-content:center;min-height:0;background:#0F1117;border:1px solid var(--c-border);border-radius:8px;overflow:hidden}
+.sright-video-area video{display:block;width:100%;height:100%;object-fit:contain;background:#0F1117}
 .sright-img .img-placeholder{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:var(--c-muted);font-size:12px}
 .sright-img .img-placeholder .ph-icon{font-size:32px;opacity:.4}
 .media-zoomable{cursor:zoom-in;position:relative}
@@ -1505,6 +1507,9 @@ function ensureRightArraysForScene(scene){
   if(!Array.isArray(scene.right.imgs)) scene.right.imgs = [];
   while(scene.right.imgs.length < scene.right.tabs.length) scene.right.imgs.push('');
   if(scene.right.imgs.length > scene.right.tabs.length) scene.right.imgs.length = scene.right.tabs.length;
+  if(!Array.isArray(scene.right.videos)) scene.right.videos = [];
+  while(scene.right.videos.length < scene.right.tabs.length) scene.right.videos.push('');
+  if(scene.right.videos.length > scene.right.tabs.length) scene.right.videos.length = scene.right.tabs.length;
   ensureRightTabColors(scene.right);
   if(!scene.right.mockup) scene.right.mockup = 'generic';
 }
@@ -2316,6 +2321,8 @@ function selectScene(bigIdx, sceneIdx){
 function getRightBody(r, tabIdx, bigIdx, sceneIdx){
   const mockup = r.mockup||'generic';
   const img = (r.imgs&&r.imgs[tabIdx])||'';
+  const video = (r.videos&&r.videos[tabIdx])||'';
+  if(video) return `<div class="sright-video-area"><video controls playsinline preload="metadata"${img?` poster="${h(img)}"`:''}><source src="${h(video)}">${currentLang === 'en' ? 'Your browser does not support video playback.' : '当前浏览器不支持视频播放。'}</video></div>`;
   if(img) return `<div class="sright-img-area media-zoomable" onclick="openMediaLightbox(this)"><div class="sright-img"><img src="${img}" alt=""></div></div>`;
   if(mockup==='feishu-hero'){
     return `<div class="media-zoomable" style="flex:1;display:flex;min-height:0" onclick="openMediaLightbox(this)"><div class="fmock" style="flex:1"><div class="fmock-bar"><div class="fmock-dot" style="background:#FF5F57"></div><div class="fmock-dot" style="background:#FEBC2E"></div><div class="fmock-dot" style="background:#28C840"></div><div class="fmock-title">Feishu Desktop</div></div><div class="fmock-body"><div class="fmock-sidebar"><div class="fmock-icon blue">M</div><div class="fmock-icon on">💬</div><div class="fmock-icon">📅</div><div class="fmock-icon">📁</div></div><div class="fmock-main"><div class="fmock-mainbar">消息</div><div class="fmock-content"><div style="font-size:11px;color:var(--c-muted);margin-bottom:10px">悬浮员工姓名，英雄卡片弹出 ↓</div><div class="hero-card-popup"><div class="hcp-header"><div class="hcp-avatar">甘</div><div><div class="hcp-name">甘雪芳</div><div class="hcp-sub">人力资源部 · 招聘经理</div></div></div><div class="hcp-row"><span class="hcp-label">员工档案</span><span class="hcp-link">查看详情</span></div><div class="hcp-row"><span class="hcp-label">员工目标</span><span class="hcp-link">查看详情</span></div></div></div></div></div></div></div>`;
@@ -2840,11 +2847,18 @@ function loadCustomSceneDetail(id){
               <div class="img-actions">
                 <label class="upload-btn">📁 上传图片<input type="file" accept="image/*" style="display:none" onchange="handleCustomSceneImg(event,'${id}',${bigIdx},${sceneIdx},${ti},'custom-rimg-${id}-${bigIdx}-${sceneIdx}-${ti}')"></label>
                 <button class="upload-btn" onclick="clearCustomSceneImg('${id}',${bigIdx},${sceneIdx},${ti},'custom-rimg-${id}-${bigIdx}-${sceneIdx}-${ti}')">🗑 清除</button>
+                <button class="upload-btn" onclick="moveCustomRightTab('${id}',${bigIdx},${sceneIdx},${ti},-1)" ${ti===0?'disabled':''}>↑ 上移</button>
+                <button class="upload-btn" onclick="moveCustomRightTab('${id}',${bigIdx},${sceneIdx},${ti},1)" ${ti===right.tabs.length-1?'disabled':''}>↓ 下移</button>
                 <button class="upload-btn" onclick="removeCustomRightTab('${id}',${bigIdx},${sceneIdx},${ti})">删除此图片 Tab</button>
               </div>
               <div class="img-url-row">
                 <input type="text" placeholder="输入图片 URL..." id="custom-rimg-url-${id}-${bigIdx}-${sceneIdx}-${ti}">
                 <button onclick="applyCustomSceneImgUrl('${id}',${bigIdx},${sceneIdx},${ti},'custom-rimg-url-${id}-${bigIdx}-${sceneIdx}-${ti}','custom-rimg-${id}-${bigIdx}-${sceneIdx}-${ti}')">应用</button>
+              </div>
+              <div class="img-url-row" style="margin-top:8px">
+                <input type="text" value="${h((right.videos&&right.videos[ti])||'')}" placeholder="外部视频 URL（MP4 / WebM）..." id="custom-rvideo-url-${id}-${bigIdx}-${sceneIdx}-${ti}">
+                <button onclick="applyCustomSceneVideoUrl('${id}',${bigIdx},${sceneIdx},${ti},'custom-rvideo-url-${id}-${bigIdx}-${sceneIdx}-${ti}')">应用视频</button>
+                <button onclick="clearCustomSceneVideoUrl('${id}',${bigIdx},${sceneIdx},${ti},'custom-rvideo-url-${id}-${bigIdx}-${sceneIdx}-${ti}')">清除</button>
               </div>
             </div>
           </div>
@@ -2974,11 +2988,29 @@ function addCustomRightTab(id, bi, si){
   ensureRightArraysForScene(scene);
   scene.right.tabs.push(currentLang === 'en' ? `View ${scene.right.tabs.length + 1}` : `图片 ${scene.right.tabs.length + 1}`);
   scene.right.imgs.push('');
+  scene.right.videos.push('');
   scene.right.tabColors.push(DEFAULT_RIGHT_TAB_COLOR);
   loadCustomSceneDetail(id);
   renderCustomPage(id);
   markUnsaved();
   toast(currentLang === 'en' ? 'Image tab added' : '已添加图片 Tab');
+}
+
+function moveCustomRightTab(id, bi, si, ti, dir){
+  const scene = DATA.custom_pages[id]?.big_tabs?.[bi]?.scenes?.[si];
+  if(!scene) return;
+  ensureRightArraysForScene(scene);
+  const right = scene.right;
+  const target = ti + dir;
+  if(target < 0 || target >= right.tabs.length) return;
+  [right.tabs[ti], right.tabs[target]] = [right.tabs[target], right.tabs[ti]];
+  [right.imgs[ti], right.imgs[target]] = [right.imgs[target], right.imgs[ti]];
+  [right.videos[ti], right.videos[target]] = [right.videos[target], right.videos[ti]];
+  [right.tabColors[ti], right.tabColors[target]] = [right.tabColors[target], right.tabColors[ti]];
+  loadCustomSceneDetail(id);
+  renderCustomPage(id);
+  markUnsaved();
+  toast(currentLang === 'en' ? 'Image tab moved' : '图片 Tab 顺序已调整');
 }
 
 function removeCustomRightTab(id, bi, si, ti){
@@ -2988,6 +3020,7 @@ function removeCustomRightTab(id, bi, si, ti){
   if(!confirm('确定删除这个图片 Tab？其中的图片也会一起删除。')) return;
   scene.right.tabs.splice(ti,1);
   scene.right.imgs.splice(ti,1);
+  scene.right.videos.splice(ti,1);
   scene.right.tabColors.splice(ti,1);
   loadCustomSceneDetail(id);
   renderCustomPage(id);
@@ -3402,11 +3435,18 @@ function loadSceneDetail(){
               <div class="img-actions">
                 <label class="upload-btn">📁 上传图片<input type="file" accept="image/*" style="display:none" onchange="handleSceneImg(event,${bigIdx},${sceneIdx},${ti})"></label>
                 <button class="upload-btn" onclick="clearSceneImg(${bigIdx},${sceneIdx},${ti})">🗑 清除</button>
+                <button class="upload-btn" onclick="moveRightTab(${bigIdx},${sceneIdx},${ti},-1)" ${ti===0?'disabled':''}>↑ 上移</button>
+                <button class="upload-btn" onclick="moveRightTab(${bigIdx},${sceneIdx},${ti},1)" ${ti===right.tabs.length-1?'disabled':''}>↓ 下移</button>
                 <button class="upload-btn" onclick="removeRightTab(${bigIdx},${sceneIdx},${ti})">删除此图片 Tab</button>
               </div>
               <div class="img-url-row">
                 <input type="text" placeholder="输入图片 URL..." id="rimg-url-${bigIdx}-${sceneIdx}-${ti}">
                 <button onclick="applySceneImgUrl(${bigIdx},${sceneIdx},${ti})">应用</button>
+              </div>
+              <div class="img-url-row" style="margin-top:8px">
+                <input type="text" value="${(right.videos&&right.videos[ti])||''}" placeholder="外部视频 URL（MP4 / WebM）..." id="rvideo-url-${bigIdx}-${sceneIdx}-${ti}">
+                <button onclick="applySceneVideoUrl(${bigIdx},${sceneIdx},${ti})">应用视频</button>
+                <button onclick="clearSceneVideoUrl(${bigIdx},${sceneIdx},${ti})">清除</button>
               </div>
             </div>
           </div>
@@ -3469,6 +3509,9 @@ function ensureRightArrays(bi, si){
     right.tabs.push(currentLang === 'en' ? 'Overview' : '概览');
     right.imgs.push('');
   }
+  if(!Array.isArray(right.videos)) right.videos = [];
+  while(right.videos.length < right.tabs.length) right.videos.push('');
+  if(right.videos.length > right.tabs.length) right.videos.length = right.tabs.length;
   ensureRightTabColors(right);
   return right;
 }
@@ -3477,11 +3520,26 @@ function addRightTab(bi, si){
   const right = ensureRightArrays(bi, si);
   right.tabs.push(currentLang === 'en' ? `View ${right.tabs.length + 1}` : `图片 ${right.tabs.length + 1}`);
   right.imgs.push('');
+  right.videos.push('');
   right.tabColors.push(DEFAULT_RIGHT_TAB_COLOR);
   loadSceneDetail();
   renderAll();
   markUnsaved();
   toast(currentLang === 'en' ? 'Image tab added' : '已添加图片 Tab');
+}
+
+function moveRightTab(bi, si, ti, dir){
+  const right = ensureRightArrays(bi, si);
+  const target = ti + dir;
+  if(target < 0 || target >= right.tabs.length) return;
+  [right.tabs[ti], right.tabs[target]] = [right.tabs[target], right.tabs[ti]];
+  [right.imgs[ti], right.imgs[target]] = [right.imgs[target], right.imgs[ti]];
+  [right.videos[ti], right.videos[target]] = [right.videos[target], right.videos[ti]];
+  [right.tabColors[ti], right.tabColors[target]] = [right.tabColors[target], right.tabColors[ti]];
+  loadSceneDetail();
+  renderAll();
+  markUnsaved();
+  toast(currentLang === 'en' ? 'Image tab moved' : '图片 Tab 顺序已调整');
 }
 
 function removeRightTab(bi, si, ti){
@@ -3490,6 +3548,7 @@ function removeRightTab(bi, si, ti){
   if(!confirm('确定删除这个图片 Tab？其中的图片也会一起删除。')) return;
   right.tabs.splice(ti, 1);
   right.imgs.splice(ti, 1);
+  right.videos.splice(ti, 1);
   right.tabColors.splice(ti, 1);
   loadSceneDetail();
   renderAll();
@@ -3526,42 +3585,72 @@ function loadImageFromDataUrl(dataUrl){
 }
 
 async function readOptimizedImage(file){
-  const original = await readFileAsDataUrl(file);
-  if(!file.type.startsWith('image/') || file.type === 'image/svg+xml') return original;
+  const MAX_SOURCE_IMAGE_BYTES = 20 * 1024 * 1024;
+  const MAX_EMBEDDED_IMAGE_BYTES = 600 * 1024;
+  const MAX_IMAGE_EDGE = 2200;
+  if(!file || !file.type.startsWith('image/')){
+    toast(currentLang === 'en' ? 'Please select an image file' : '请选择图片文件');
+    return '';
+  }
+  if(file.size > MAX_SOURCE_IMAGE_BYTES){
+    toast(currentLang === 'en' ? 'Image must be smaller than 20 MB' : '原图不能超过 20 MB');
+    return '';
+  }
   try{
+    const original = await readFileAsDataUrl(file);
     const img = await loadImageFromDataUrl(original);
-    const maxEdge = 2200;
-    const scale = Math.min(1, maxEdge / Math.max(img.naturalWidth || img.width, img.naturalHeight || img.height));
-    const targetW = Math.max(1, Math.round((img.naturalWidth || img.width) * scale));
-    const targetH = Math.max(1, Math.round((img.naturalHeight || img.height) * scale));
-    if(original.length < 750000 && scale === 1) return original;
+    const sourceW = img.naturalWidth || img.width;
+    const sourceH = img.naturalHeight || img.height;
+    let scale = Math.min(1, MAX_IMAGE_EDGE / Math.max(sourceW, sourceH));
     const canvas = document.createElement('canvas');
-    canvas.width = targetW;
-    canvas.height = targetH;
-    const ctx = canvas.getContext('2d', {alpha:false});
-    ctx.fillStyle = '#fff';
-    ctx.fillRect(0, 0, targetW, targetH);
-    ctx.drawImage(img, 0, 0, targetW, targetH);
-    const optimized = canvas.toDataURL('image/jpeg', 0.88);
-    return optimized.length < original.length ? optimized : original;
+    const qualities = [0.86, 0.78, 0.70, 0.62, 0.54, 0.46];
+    let smallest = '';
+    for(let resizePass = 0; resizePass < 7; resizePass++){
+      const targetW = Math.max(1, Math.round(sourceW * scale));
+      const targetH = Math.max(1, Math.round(sourceH * scale));
+      canvas.width = targetW;
+      canvas.height = targetH;
+      const ctx = canvas.getContext('2d', {alpha:true});
+      ctx.clearRect(0, 0, targetW, targetH);
+      ctx.drawImage(img, 0, 0, targetW, targetH);
+      for(const quality of qualities){
+        const webp = canvas.toDataURL('image/webp', quality);
+        if(!webp.startsWith('data:image/webp')) throw new Error('WEBP_UNSUPPORTED');
+        if(!smallest || getDataUrlByteSize(webp) < getDataUrlByteSize(smallest)) smallest = webp;
+        if(getDataUrlByteSize(webp) <= MAX_EMBEDDED_IMAGE_BYTES) return webp;
+      }
+      scale *= 0.82;
+    }
+    toast(currentLang === 'en' ? 'Unable to compress image below 600 KB' : '图片压缩后仍超过 600 KB，请选择较小图片');
+    return '';
   }catch(e){
-    return original;
+    toast(currentLang === 'en' ? 'Image conversion failed' : '图片转为 WebP 失败，请更换图片');
+    return '';
   }
 }
 
+function getDataUrlByteSize(dataUrl){
+  if(!dataUrl) return 0;
+  const base64 = dataUrl.slice(dataUrl.indexOf(',') + 1);
+  const padding = (base64.match(/=*$/) || [''])[0].length;
+  return Math.max(0, Math.floor(base64.length * 3 / 4) - padding);
+}
+
 function showUploadOptimizedToast(originalSize, optimizedDataUrl){
-  const optimizedSize = Math.round((optimizedDataUrl.length * 3) / 4);
-  if(originalSize && optimizedSize && optimizedSize < originalSize * 0.9){
-    const pct = Math.max(1, Math.round((1 - optimizedSize / originalSize) * 100));
-    toast(`图片已上传并压缩约 ${pct}%`);
-  }else{
-    toast('图片已上传');
-  }
+  const optimizedSize = getDataUrlByteSize(optimizedDataUrl);
+  const sizeLabel = optimizedSize >= 1024 * 1024
+    ? `${(optimizedSize / 1024 / 1024).toFixed(1)} MB`
+    : `${Math.max(1, Math.round(optimizedSize / 1024))} KB`;
+  const pct = originalSize > optimizedSize ? Math.max(1, Math.round((1 - optimizedSize / originalSize) * 100)) : 0;
+  toast(currentLang === 'en'
+    ? `Uploaded as WebP · ${sizeLabel}${pct ? ` · ${pct}% smaller` : ''}`
+    : `已转为 WebP · ${sizeLabel}${pct ? ` · 减小 ${pct}%` : ''}`);
 }
 
 function handleImgUpload(e, key, previewId){
   const file = e.target.files[0]; if(!file) return;
   readOptimizedImage(file).then(dataUrl=>{
+    if(!dataUrl) return;
     DATA[key] = dataUrl;
     const p = document.getElementById(previewId); p.src=dataUrl; p.classList.add('show');
     markUnsaved(); showUploadOptimizedToast(file.size, dataUrl);
@@ -3592,6 +3681,7 @@ function syncLogoImgAdmin(){
 function handleLogoImgUpload(e, previewId){
   const file = e.target.files[0]; if(!file) return;
   readOptimizedImage(file).then(dataUrl=>{
+    if(!dataUrl) return;
     DATA.logo_img = dataUrl;
     const p = document.getElementById(previewId);
     if(p){ p.src=dataUrl; p.classList.add('show'); }
@@ -3642,6 +3732,7 @@ function syncTimelineHeroImgAdmin(){
 function handleTimelineHeroImgUpload(e, previewId){
   const file = e.target.files[0]; if(!file) return;
   readOptimizedImage(file).then(dataUrl=>{
+    if(!dataUrl) return;
     const item = getActiveTimelineItem();
     if(item) item.hero_img = dataUrl;
     DATA.hero_img = '';
@@ -3673,6 +3764,7 @@ function applyTimelineHeroImgUrl(inputId, previewId){
 function handleCustomPageImg(e, id, previewId){
   const file = e.target.files[0]; if(!file) return;
   readOptimizedImage(file).then(dataUrl=>{
+    if(!dataUrl) return;
     if(!DATA.custom_pages[id]) DATA.custom_pages[id] = createCustomPage('');
     DATA.custom_pages[id].img = dataUrl;
     const p = document.getElementById(previewId); p.src = dataUrl; p.classList.add('show');
@@ -3695,6 +3787,7 @@ function applyCustomPageImgUrl(id, inputId, previewId){
 function handleCustomSceneImg(e, id, bi, si, ti, previewId){
   const file = e.target.files[0]; if(!file) return;
   readOptimizedImage(file).then(dataUrl=>{
+    if(!dataUrl) return;
     const page = DATA.custom_pages[id];
     if(!page) return;
     normalizeCustomPageLayout(page, page.title);
@@ -3727,9 +3820,45 @@ function applyCustomSceneImgUrl(id, bi, si, ti, inputId, previewId){
   const p = document.getElementById(previewId); p.src = url; p.classList.add('show');
   markUnsaved(); toast('图片 URL 已应用');
 }
+function validateExternalVideoUrl(value){
+  const raw = String(value || '').trim();
+  if(!raw) return '';
+  try{
+    const url = new URL(raw);
+    return (url.protocol === 'https:' || url.protocol === 'http:') ? url.href : null;
+  }catch(e){
+    return null;
+  }
+}
+function applyCustomSceneVideoUrl(id, bi, si, ti, inputId){
+  const input = document.getElementById(inputId);
+  const url = validateExternalVideoUrl(input?.value);
+  if(url === null){ toast(currentLang === 'en' ? 'Please enter a valid HTTP(S) video URL' : '请输入有效的 HTTP(S) 视频 URL'); return; }
+  const page = DATA.custom_pages[id];
+  if(!page) return;
+  const scene = page.big_tabs[bi].scenes[si];
+  ensureRightArraysForScene(scene);
+  scene.right.videos[ti] = url;
+  if(input) input.value = url;
+  renderCustomPage(id);
+  markUnsaved();
+  toast(url ? (currentLang === 'en' ? 'Video URL applied' : '视频 URL 已应用') : (currentLang === 'en' ? 'Video cleared' : '视频已清除'));
+}
+function clearCustomSceneVideoUrl(id, bi, si, ti, inputId){
+  const page = DATA.custom_pages[id];
+  if(!page) return;
+  const scene = page.big_tabs[bi].scenes[si];
+  ensureRightArraysForScene(scene);
+  scene.right.videos[ti] = '';
+  const input = document.getElementById(inputId);
+  if(input) input.value = '';
+  renderCustomPage(id);
+  markUnsaved(); toast(currentLang === 'en' ? 'Video cleared' : '视频已清除');
+}
 function handleSceneImg(e, bi, si, ti){
   const file = e.target.files[0]; if(!file) return;
   readOptimizedImage(file).then(dataUrl=>{
+    if(!dataUrl) return;
     if(!DATA.big_tabs[bi].scenes[si].right.imgs) DATA.big_tabs[bi].scenes[si].right.imgs=[];
     DATA.big_tabs[bi].scenes[si].right.imgs[ti] = dataUrl;
     const p=document.getElementById(`rimg-${bi}-${si}-${ti}`); p.src=dataUrl; p.classList.add('show');
@@ -3747,6 +3876,25 @@ function applySceneImgUrl(bi,si,ti){
   DATA.big_tabs[bi].scenes[si].right.imgs[ti]=url;
   const p=document.getElementById(`rimg-${bi}-${si}-${ti}`); p.src=url; p.classList.add('show');
   markUnsaved(); toast('图片 URL 已应用');
+}
+function applySceneVideoUrl(bi,si,ti){
+  const input = document.getElementById(`rvideo-url-${bi}-${si}-${ti}`);
+  const url = validateExternalVideoUrl(input?.value);
+  if(url === null){ toast(currentLang === 'en' ? 'Please enter a valid HTTP(S) video URL' : '请输入有效的 HTTP(S) 视频 URL'); return; }
+  const right = ensureRightArrays(bi,si);
+  right.videos[ti] = url;
+  if(input) input.value = url;
+  renderAll();
+  markUnsaved();
+  toast(url ? (currentLang === 'en' ? 'Video URL applied' : '视频 URL 已应用') : (currentLang === 'en' ? 'Video cleared' : '视频已清除'));
+}
+function clearSceneVideoUrl(bi,si,ti){
+  const right = ensureRightArrays(bi,si);
+  right.videos[ti] = '';
+  const input = document.getElementById(`rvideo-url-${bi}-${si}-${ti}`);
+  if(input) input.value = '';
+  renderAll();
+  markUnsaved(); toast(currentLang === 'en' ? 'Video cleared' : '视频已清除');
 }
 
 /* ══ ADMIN UI HELPERS ══ */
